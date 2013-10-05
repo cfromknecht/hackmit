@@ -2,11 +2,11 @@ package main
 
 import (
 	"crypto/rand"
+	"encoding/binary"
 	"fmt"
 	"github.com/gorilla/sessions"
 	"io"
 	"net/http"
-	"encoding/binary"
 )
 
 var authKey = []byte("somesecretauth")
@@ -15,26 +15,26 @@ var pool *Pool
 var clients map[int64]*Client
 
 type Pool struct {
-	in      chan *Client
-	out     chan *Room
+	in  chan *Client
+	out chan *Room
 }
 
 type Client struct {
-	id		int64
-	in 		chan string
-	out		chan string
+	id      int64
+	in      chan string
+	out     chan string
 	retChan chan *Room
 }
 
 type Room struct {
-	id 		int64
-	client1	*Client
+	id      int64
+	client1 *Client
 	client2 *Client
 }
 
 func (p *Pool) Pair() {
 	for {
-		c1, c2 := <- p.in, <- p.in
+		c1, c2 := <-p.in, <-p.in
 
 		b := make([]byte, 8)
 		n, err := io.ReadFull(rand.Reader, b)
@@ -54,8 +54,8 @@ func (p *Pool) Pair() {
 
 func newPool() *Pool {
 	pool := &Pool{
-		in:			make(chan *Client),
-		out:		make(chan *Room),
+		in:  make(chan *Client),
+		out: make(chan *Room),
 	}
 
 	go pool.Pair()
@@ -66,7 +66,7 @@ func newPool() *Pool {
 func UIDFromSession(w http.ResponseWriter, r *http.Request) (int64, error) {
 	session, _ := store.Get(r, "session")
 	userid := session.Values["userid"]
-	
+
 	var uid int64
 	var b []byte
 
@@ -101,18 +101,18 @@ func main() {
 func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 	uid, err := UIDFromSession(w, r)
 	handleError(err)
-	
+
 	retChan := make(chan *Room)
-	client := &Client {
-		id:		uid, 
-		in:		nil,
-		out: 	make(chan string),
+	client := &Client{
+		id:      uid,
+		in:      nil,
+		out:     make(chan string),
 		retChan: retChan,
 	}
 	clients[uid] = client
 	pool.in <- client
 
-	chatroom := <- retChan
+	chatroom := <-retChan
 
 	fmt.Fprint(w, "{\"status\":\"success\",\"crid\":", chatroom.id, "}")
 }
@@ -128,7 +128,6 @@ func sendMessage(w http.ResponseWriter, r *http.Request) {
 
 	message := "some string"
 
-
 	client := clients[uid]
 
 	fmt.Println("sending")
@@ -142,7 +141,7 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 	uid, err := UIDFromSession(w, r)
 	handleError(err)
 
-	message := <- clients[uid].in 
+	message := <-clients[uid].in
 
 	fmt.Fprint(w, message)
 }
