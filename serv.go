@@ -30,13 +30,6 @@ type Room struct {
 	client2 *Client
 }
 
-func (p *Pool) Listen() {
-	for {
-		client := <- p.in
-		p.clients = append(p.clients, client)
-	}
-}
-
 func (p *Pool) Pair() {
 	for {
 		fmt.Println("pairing")
@@ -53,7 +46,8 @@ func (p *Pool) Pair() {
 		crId, _ := binary.Varint(b)
 
 		room := &Room{crId, c1, c2}
-		p.out <- room
+		c1.retChan <- room
+		c2.retChan <- room
 	}
 }
 
@@ -64,7 +58,6 @@ func newPool() *Pool {
 		out:		make(chan *Room),
 	}
 
-	go pool.Listen()
 	go pool.Pair()
 
 	return pool
@@ -107,8 +100,9 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("client sent")
 
 	chatroom := <- retChan
+	fmt.Println("chatroom received")
 
-	fmt.Fprint(w, "Joined chatroom %s", chatroom.id)
+	fmt.Fprint(w, "Joined chatroom ", chatroom.id)
 }
 
 func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
