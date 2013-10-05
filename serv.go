@@ -12,15 +12,17 @@ import (
 var authKey = []byte("somesecretauth")
 var store sessions.Store
 var pool *Pool
+var clients map[int64]*Client
 
 type Pool struct {
-	clients []*Client
 	in      chan *Client
 	out     chan *Room
 }
 
 type Client struct {
 	id		int64
+	in 		chan string
+	out		chan string
 	retChan chan *Room
 }
 
@@ -32,11 +34,7 @@ type Room struct {
 
 func (p *Pool) Pair() {
 	for {
-		fmt.Println("pairing")
-		c1 := <- p.in
-		fmt.Println("middlePairing")
-		c2 := <- p.in
-		fmt.Println("donePairing")
+		c1, c2 := <- p.in, <- p.in
 
 		b := make([]byte, 8)
 		n, err := io.ReadFull(rand.Reader, b)
@@ -46,6 +44,9 @@ func (p *Pool) Pair() {
 		crId, _ := binary.Varint(b)
 
 		room := &Room{crId, c1, c2}
+
+		c1.in, c2.in = c2.out, c1.out
+
 		c1.retChan <- room
 		c2.retChan <- room
 	}
@@ -53,7 +54,6 @@ func (p *Pool) Pair() {
 
 func newPool() *Pool {
 	pool := &Pool{
-		clients:	make([]*Client, 0),
 		in:			make(chan *Client),
 		out:		make(chan *Room),
 	}
@@ -63,17 +63,7 @@ func newPool() *Pool {
 	return pool
 }
 
-func main() {
-	store = sessions.NewCookieStore(authKey)
-
-	pool = newPool()
-
-	http.HandleFunc("/chatroom/join", joinChatRoom)
-	http.HandleFunc("/chatroom/leave", leaveChatRoom)
-	http.ListenAndServe(":8080", nil)
-}
-
-func joinChatRoom(w http.ResponseWriter, r *http.Request) {
+func UIDFromSession(w http.ResponseWriter, r *http.Request) (int64, error) {
 	session, _ := store.Get(r, "session")
 	userid := session.Values["userid"]
 	
@@ -84,8 +74,7 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 		b = make([]byte, 8)
 		n, err := io.ReadFull(rand.Reader, b)
 		if err != nil || n != 8 {
-			fmt.Println(err)
-			return
+			return 0, err
 		}
 		session.Values["userid"] = b
 		session.Save(r, w)
@@ -93,20 +82,73 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 		b = []byte(userid.([]uint8))
 	}
 	uid, _ = binary.Varint(b)
+	return uid, nil
+}
 
+func main() {
+	store = sessions.NewCookieStore(authKey)
+
+	pool = newPool()
+	clients = make(map[int64]*Client)
+
+	http.HandleFunc("/message/check", checkMessage)
+	http.HandleFunc("/message/send", sendMessage)
+	http.HandleFunc("/chatroom/join", joinChatRoom)
+	http.HandleFunc("/chatroom/leave", leaveChatRoom)
+	http.ListenAndServe(":8080", nil)
+}
+
+func joinChatRoom(w http.ResponseWriter, r *http.Request) {
+	uid, err := UIDFromSession(w, r)
+	handleError(err)
+	
 	retChan := make(chan *Room)
-	client := &Client {uid, retChan}
+	client := &Client {
+		id:		uid, 
+		in:		nil,
+		out: 	make(chan string),
+		retChan: retChan,
+	}
+	clients[uid] = client
 	pool.in <- client
-	fmt.Println("client sent")
 
 	chatroom := <- retChan
-	fmt.Println("chatroom received")
 
-	fmt.Fprint(w, "Joined chatroom ", chatroom.id)
+	fmt.Fprint(w, "{\"status\":\"success\",\"crid\":", chatroom.id, "}")
 }
 
 func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, "session")
-	fmt.Println(session.Values["userid"])
-	fmt.Fprint(w, session.Values["userid"])
+	uid, _ := UIDFromSession(w, r)
+	fmt.Fprint(w, uid)
+}
+
+func sendMessage(w http.ResponseWriter, r *http.Request) {
+	uid, err := UIDFromSession(w, r)
+	handleError(err)
+
+	message := "some string"
+
+
+	client := clients[uid]
+
+	fmt.Println("sending")
+	client.out <- message
+	fmt.Println("sent")
+
+	fmt.Fprint(w, "{\"status\":\"success\"}")
+}
+
+func checkMessage(w http.ResponseWriter, r *http.Request) {
+	uid, err := UIDFromSession(w, r)
+	handleError(err)
+
+	message := <- clients[uid].in 
+
+	fmt.Fprint(w, message)
+}
+
+func handleError(err error) {
+	if err != nil {
+		fmt.Println(err)
+	}
 }
