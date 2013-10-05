@@ -36,6 +36,8 @@ func (p *Pool) Pair() {
 	for {
 		c1, c2 := <-p.in, <-p.in
 
+		fmt.Println("match found")
+
 		b := make([]byte, 8)
 		n, err := io.ReadFull(rand.Reader, b)
 		if err != nil || n != 8 {
@@ -102,6 +104,7 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 	uid, err := UIDFromSession(w, r)
 	handleError(err)
 
+  	fmt.Println("uid: ", uid)
 	retChan := make(chan *Room)
 	client := &Client{
 		id:      uid,
@@ -112,6 +115,7 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 	clients[uid] = client
 	pool.in <- client
 
+	fmt.Println("added ", uid, " to queue")
 	chatroom := <-retChan
 
 	fmt.Fprint(w, "{\"status\":\"success\",\"crid\":", chatroom.id, "}")
@@ -130,9 +134,7 @@ func sendMessage(w http.ResponseWriter, r *http.Request) {
 
 	client := clients[uid]
 
-	fmt.Println("sending")
 	client.out <- message
-	fmt.Println("sent")
 
 	fmt.Fprint(w, "{\"status\":\"success\"}")
 }
