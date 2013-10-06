@@ -194,20 +194,28 @@ func login(w http.ResponseWriter, r *http.Request) {
 		err := row.Scan(&iq.Id)
 
 		if err != nil {
+			fmt.Println("inserting")
 			_, err = db.Exec("insert into users (facebook_id, username, email, level, points) values (?, ?, ?, 0, 0)", uid, "", "")
 			if err != nil {
 				fmt.Fprint(w, "{\"status\":\"failure\"}")
 				return
 			} else {
+				fmt.Println("searching again")
+
 				row = db.QueryRow("SELECT id FROM users WHERE facebook_id=?", string(uid))
 				err = row.Scan(&iq.Id)
 				if err != nil {
+					fmt.Println("scan failed")
+
 					fmt.Fprint(w, "{\"status\":\"failure\"}")
 					return
 				}
 			}
 
 		}
+
+		fmt.Println("found")
+
 
 		session, _ := store.Get(r, "session")
 		session.Values["userid"] = iq.Id
