@@ -20,6 +20,8 @@ var templates = template.Must(template.ParseFiles("index.html"))
 
 const MESSAGE_QUEUE_SIZE = 10
 
+const STATUS_FAILURE = "{\"status\":\"failure\"}"
+
 var authKey = []byte("somesecretauth")
 var store sessions.Store
 
@@ -109,6 +111,8 @@ func main() {
 	http.HandleFunc("/message/check", checkMessage)
 	http.HandleFunc("/message/send", sendMessage)
 
+	http.HandleFunc("/question/new", newQuestion)
+
 	http.HandleFunc("/chatroom/join", joinChatRoom)
 	http.HandleFunc("/chatroom/leave", leaveChatRoom)
 
@@ -148,7 +152,8 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 
 func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
 	uid, _ := UIDFromSession(w, r)
-	fmt.Fprint(w, uid)
+	delete(clients, uid)
+	fmt.Fprint(w, "{\"status\":\"success\"}")
 }
 
 func sendMessage(w http.ResponseWriter, r *http.Request) {
@@ -163,9 +168,9 @@ func sendMessage(w http.ResponseWriter, r *http.Request) {
 
 	if client != nil {
 		client.out <- message
-		fmt.Fprint(w, "{\"status\":\"success\"}-", message)
+		fmt.Fprint(w, "{\"status\":\"success\"}")
 	} else {
-		fmt.Fprint(w, "{\"status\":\"failure\"}-", message)
+		fmt.Fprint(w, STATUS_FAILURE)
 	}	
 }
 
@@ -193,6 +198,23 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+type Question struct {
+	id 	int64
+	title string
+	body string
+	difficulty int
+}
+
+func newQuestion (w http.ResponseWriter, r *http.Request) {
+	row := db.QueryRow("SELECT * FROM questions ORDER BY RAND()")
+	q := new(Question)
+	err := row.Scan(&q.id, &q.title, &q.body, &q.difficulty)
+
+	if err != nil {
+		fmt.Println(err)
+
+	}
+}
 
 
 func login(w http.ResponseWriter, r *http.Request) {
@@ -206,15 +228,15 @@ func login(w http.ResponseWriter, r *http.Request) {
 		err := row.Scan(&iq.Id)
 
 		if err != nil {
-			_, err = db.Exec("insert into users (facebook_id, username, email, level, points) values (?, ?, ?, 0, 0)", uid, "", "")
+			_, err = db.Exec("INSERT INTO users (facebook_id, username, email, level, points) VALUES (?, ?, ?, 0, 0)", uid, "", "")
 			if err != nil {
-				fmt.Fprint(w, "{\"status\":\"failure\"}")
+				fmt.Fprint(w, STATUS_FAILURE)
 				return
 			} else {
 				row = db.QueryRow("SELECT id FROM users WHERE facebook_id=?", string(uid))
 				err = row.Scan(&iq.Id)
 				if err != nil {
-					fmt.Fprint(w, "{\"status\":\"failure\"}")
+					fmt.Fprint(w, STATUS_FAILURE)
 					return
 				}
 			}
@@ -226,26 +248,6 @@ func login(w http.ResponseWriter, r *http.Request) {
 		session.Save(r, w)
 
 		fmt.Fprint(w, "{\"status\":\"success\"}")
-
-
-	// 	if err == nil {
-	// 		fmt.Fprint(w, "{\"status\":\"success\",\"uid\":", iq.Id, "}")
-	// 	} else {
-	// 		_, err = db.Exec("insert into users (facebook_id, username, email, level, points) values (?, ?, ?, 0, 0)", uid, "", "")
-	// 		if err == nil {
-	// 			row = db.QueryRow("SELECT id FROM users WHERE facebook_id=?", string(uid))
-	// 			err = row.Scan(&iq.Id)
-	// 			if err == nil {
-	// 				fmt.Fprint(w, "{\"status\":\"success\"},\"uid\":", iq.Id, "}")
-	// 			} else {
-	// 				fmt.Fprint(w, "{\"status\":\"failure\"}")
-	// 			}
-	// 		} else {
-	// 			fmt.Fprint(w, "{\"status\":\"failure\"}")
-	// 		}
-	// 	}
-	// } else {
-	// 	fmt.Fprint(w, "{\"status\":\"failure\"}")
 	}
 }
 	
