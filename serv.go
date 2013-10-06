@@ -128,11 +128,6 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 	uid, err := UIDFromSession(w, r)
 	handleError(err)
 
-	prev := clients[uid]
-	if (prev != nil) {
-		delete(clients, uid)
-	}
-
 	fmt.Println("join ", uid)
 
 	retChan := make(chan *Room)
@@ -167,10 +162,9 @@ func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("leave ", uid)
 
 	close(client.out)
+	close(client.in)
 
-	client.in = nil
-	client.out = make(chan string)
-	pool.in <- client
+	delete(clients, uid)
 
 	fmt.Fprint(w, "{\"status\":\"success\"}")
 }
@@ -210,7 +204,7 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprint(w, "{\"status\":\"success\",\"s\":\"",message, "\"}")
 			} else {
 				fmt.Println("channel closed")
-				client.out = nil
+				delete(clients, uid)
 				fmt.Fprint(w, "{\"status\":\"failure\"}")
 			}
 		default:
