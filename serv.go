@@ -231,6 +231,8 @@ func login(w http.ResponseWriter, r *http.Request) {
 		session.Values["userid"] = iq.Id
 		session.Save(r, w)
 
+		fmt.Println(session.Values)
+		
 		fmt.Fprint(w, "{\"status\":\"success\"}")
 
 
