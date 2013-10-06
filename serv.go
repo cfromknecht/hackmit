@@ -3,7 +3,7 @@ package main
 import (
 	_ "time"
 	"crypto/rand"
-	"encoding/binary"
+	// "encoding/binary"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/sessions"
@@ -43,7 +43,7 @@ type Client struct {
 }
 
 type Room struct {
-	id      int64
+	id      []byte
 	client1 *Client
 	client2 *Client
 }
@@ -54,16 +54,16 @@ func (p *Pool) Pair() {
 
 		fmt.Println("match found for ", c1.id, " and ", c2.id)
 
-		b := make([]byte, 32)
+		b := make([]byte, 1)
 		n, err := io.ReadFull(rand.Reader, b)
-		if err != nil || n != 32 {
+		if err != nil || n != 1 {
 			return
 		}
-		crId, _ := binary.Varint(b)
+		// crId, _ := binary.Varint(b)
 
-		room := &Room{crId, c1, c2}
+		room := &Room{b, c1, c2}
 
-		fmt.Println("ChatroomID: ", crId)
+		fmt.Println("ChatroomID: ", b)
 
 		c1.in, c2.in = c2.out, c1.out
 
