@@ -157,11 +157,11 @@ func asciify(ba []byte) string {
 
 func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
 	uid, _ := UIDFromSession(w, r)
-	// client := clients[uid]
+	client := clients[uid]
+
+	close(client.out)
 
 	fmt.Println("leave ", uid)
-
-	delete(clients, uid)
 
 	fmt.Fprint(w, "{\"status\":\"success\"}")
 }
@@ -198,10 +198,9 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 		select {
 		case message, ok := <- client.in:
 			if ok {
-				fmt.Fprint(w, "{\"status\":\"success\",\"s\":\"",message, "\"}")
+				fmt.Fprint(w, "{\"status\":\"success\",\"s\":\"", message, "\"}")
 			} else {
-				fmt.Println("channel closed")
-				delete(clients, uid)
+				close(client.out)
 				fmt.Fprint(w, "{\"status\":\"failure\"}")
 			}
 		default:
@@ -209,7 +208,7 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 		}
 	
 	} else {
-		fmt.Fprint(w, "{\"status\":\"success\",\"s\":\"\"}")
+		fmt.Fprint(w, "{\"status\":\"failure\",\"s\":\"\"}")
 	}
 }
 
