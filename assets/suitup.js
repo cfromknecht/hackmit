@@ -18,9 +18,8 @@ function init_user_details() {
 $(document).ready(function () {
   //  login();
     //  init_user_details();
-
+    
 });
-
 
 function chat_join(s) {
     $.ajax({
