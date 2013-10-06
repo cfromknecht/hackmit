@@ -14,7 +14,7 @@ do
 	if [ "$DIFF" != "" ] 
 	then
 	    CASE="FAIL\n"
-	    EXTRA="returned\n$output\ninput\n"$(cat $i)
+	    EXTRA="Returned:\n$output\nInput:\n"$(cat $i)
 	    # EXTRA+=$(cat $i)
 	fi
 	echo -e "Test Case $COUNTER: $CASE$EXTRA\n\n"
