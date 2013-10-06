@@ -21,7 +21,6 @@ $(document).ready(function () {
     
 });
 
-
 function chat_join(s) {
     $.ajax({
         type: "GET",
@@ -100,6 +99,17 @@ function login() {
 
     FB.login(function (response) {
         //_check_login();      
+    });
+
+    var webrtc = new SimpleWebRTC({
+            localVideoEl: 'localVideo',
+            remoteVideosEl: 'remoteVideo',
+            autoRequestMedia: true
+    });
+    
+    webrtc.on('readyToCall', function () {
+      // if(chatroomid !== null)
+      //   webrtc.joinRoom(chatroomid);
     });
 }
 function logout() {
