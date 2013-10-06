@@ -159,14 +159,17 @@ func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
 	uid, _ := UIDFromSession(w, r)
 	client := clients[uid]
 
-	select {
-	case _, ok := <- client.in:
-		if ok {
-			close(client.out)
+	if client != nil {
+		select {
+		case _, ok := <- client.in:
+			if ok {
+				close(client.out)
+			}
+		default:
+			fmt.Println("already closed")
 		}
-	default:
-		fmt.Println("already closed")
 	}
+	
 
 	fmt.Println("leave ", uid)
 
