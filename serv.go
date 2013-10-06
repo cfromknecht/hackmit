@@ -208,18 +208,18 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 		select {
 		case message, ok := <- client.in:
 			if ok {
-				fmt.Fprint(w, message)
+				fmt.Fprint(w, "{\"status\":\"success\",\"s\":\"",message, "\"}")
 			} else {
 				fmt.Println("channel closed")
 				client.out = nil
 				fmt.Fprint(w, "{\"status\":\"failure\"}")
 			}
 		default:
-			fmt.Fprint(w, "")
+			fmt.Fprint(w, "{\"status\":\"success\",\"s\":\"\"}")
 		}
 	
 	} else {
-		fmt.Fprint(w, "")
+		fmt.Fprint(w, "{\"status\":\"success\",\"s\":\"\"}")
 	}
 }
 
