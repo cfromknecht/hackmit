@@ -54,7 +54,7 @@ function chat_leave() {
         }
     });
     chatroomid = null;
-    webrtc.leaveRoom();
+    webrtc.leaveRoom(webrtc.roomName);
 }
 
 function chat_send(chat, convo) {
