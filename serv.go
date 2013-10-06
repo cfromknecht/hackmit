@@ -176,9 +176,17 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 
 	if client != nil {
 		fmt.Println("waiting")
-		message := <- clients[uid].in
-		fmt.Println("received")
-		fmt.Fprint(w, "{\"status\":\"success\"}-", message)
+		select {
+		case message, ok := <- clients[uid].in:
+			if ok {
+				fmt.Fprint(w, "{\"status\":\"success\"}-", message)
+			}
+			else {
+				fmt.Fprint(w, "{\"status\":\"failure\"}")
+			}
+		}
+		default:
+			fmt.Fprint(w, "")
 	} else {
 		fmt.Fprint(w, "{\"status\":\"failure\"}")
 	}
