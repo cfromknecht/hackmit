@@ -1,7 +1,5 @@
 import sys
 from sandbox import Sandbox, SandboxConfig
-from os import listdir
-from StringIO import StringIO
 
 if __name__ == "main":
 	'''
