@@ -149,13 +149,14 @@ func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
 }
 
 func sendMessage(w http.ResponseWriter, r *http.Request) {
+	message := r.PostFormValue("message")
 	uid, err := UIDFromSession(w, r)
 	handleError(err)
 
 	fmt.Println(r)
 	// message := r.PostFormValue("message")
 
-	message := "some string"
+	// message := "some string"
 
 	client := clients[uid]
 
@@ -172,6 +173,7 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 	handleError(err)
 
 	client := clients[uid]
+
 	if client != nil {
 		fmt.Println("waiting")
 		message := <- clients[uid].in
