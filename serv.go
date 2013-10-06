@@ -192,12 +192,12 @@ func testCode(w http.ResponseWriter, r *http.Request) {
 	cmd := exec.Command(app, qid, code)
     var b bytes.Buffer
     cmd.Stdout = &b
-    err := cmd.Run()
+    out, err := cmd.Output()
     if err != nil {
     	fmt.Println(err)
     }
-    fmt.Println(b.String())
-    fmt.Fprint(w, "{\"status\":\"success\", \"data\": \"", b.String(), "\"}" )
+    fmt.Println(String(out))
+    fmt.Fprint(w, "{\"status\":\"success\", \"data\": \"", String(out), "\"}" )
     return
 }
 
