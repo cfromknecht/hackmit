@@ -143,6 +143,7 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 		retChan: retChan,
 	}
 	go func(c *Client) {
+		fmt.Println("waiting")
 		<- c.endin
 		c.endout <- true
 		fmt.Println("deleting: ", c.id)
