@@ -1,7 +1,5 @@
-PROBLEM="1"
-CODE="import os
-x = raw_input()
-print x"
+PROBLEM="$1"
+CODE="$2"
 
 COUNTER=1
 for i in $(ls question/1/*.in)
