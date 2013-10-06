@@ -42,6 +42,7 @@ function chat_join(s) {
 }
 
 function join_room() {
+    webrtc.createRoom(chatroomid);
     webrtc.joinRoom(String(chatroomid));
 }
 
@@ -54,7 +55,7 @@ function chat_leave() {
         }
     });
     chatroomid = null;
-    webrtc.leaveRoom();
+    webrtc.leaveRoom(webrtc.roomName);
 }
 
 function chat_send(chat, convo) {
