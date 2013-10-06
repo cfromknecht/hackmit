@@ -18,13 +18,11 @@ function init_user_details() {
 $(document).ready(function () {
   //  login();
     //  init_user_details();
-    
-});
-
-var webrtc = new SimpleWebRTC({
+   var webrtc = new SimpleWebRTC({
             localVideoEl: 'localVideo',
             remoteVideosEl: 'remoteVideo',
             autoRequestMedia: true
+            }); 
 });
 
 
