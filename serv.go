@@ -59,7 +59,7 @@ func (p *Pool) Pair() {
 		}
 		crId, _ := binary.Varint(b)
 
-		room := &Room{c1, c2}
+		room := &Room{crId, c1, c2}
 
 		c1.in, c2.in = c2.out, c1.out
 
