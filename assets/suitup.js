@@ -51,7 +51,14 @@ function chat_leave() {
         type: "GET",
         url: su + '/chatroom/leave',
         success: function (data) {
-            $('#firepad').html('');
+            sts = JSON.parse(data).status;
+            console.log("sts: " + sts);
+            if (sts == "failure") {
+                chat_join()
+            }
+            else {
+                $('#firepad').html('');
+            }
         }
     });
     chatroomid = null;
