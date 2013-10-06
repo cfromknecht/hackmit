@@ -197,14 +197,12 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 
 	if client != nil {
 		select {
-		case message, ok := <- clients[uid].in:
+		case message, ok := <- client.in:
 			// fmt.Println("message pulled from channel")
 			if ok {
 				fmt.Fprint(w, message)
 			} else {
-				if client.out != nil {
-					close(client.out)
-				}
+				client.out = nil
 				fmt.Fprint(w, "{\"status\":\"failure\"}")
 			}
 		default:
