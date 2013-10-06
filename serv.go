@@ -154,11 +154,9 @@ func sendMessage(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(r)
 
-	message := r.FormValue("message")
+	message := r.FormValue("s")
 
 	// message := r.PostFormValue("message")
-
-	// message := "some string"
 
 	client := clients[uid]
 
@@ -180,7 +178,7 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("waiting")
 		message := <- clients[uid].in
 		fmt.Println("received")
-		fmt.Fprint(w, message)
+		fmt.Fprint(w, "{\"status\":\"success\"}-", message)
 	} else {
 		fmt.Fprint(w, "{\"status\":\"failure\"}")
 	}
