@@ -133,7 +133,7 @@ function question_submit() {
         success: function (data) {
             if (JSON.parse(data).status == "success") {
                 dt = JSON.parse(data).data;
-                $('#convo').html($('#convo').html() + '<br /><strong style="color:red">Other:</strong> ' + JSON.parse(data).s);
+                $('#convo').html($('#convo').html() + '<br /><strong style="color:red">System:</strong> ' + dt);
                 // $('#convo').html($('#convo').html() + '<br /><strong style="color:black">System:</strong> ' + dt;
             }
         }
