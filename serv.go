@@ -13,7 +13,10 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"runtime"
 	"errors"
+	"html/template"
 )
+
+var templates = template.Must(template.ParseFiles("index.html"))
 
 const MESSAGE_QUEUE_SIZE = 10
 
@@ -108,7 +111,7 @@ func main() {
 	http.HandleFunc("/chatroom/join", joinChatRoom)
 	http.HandleFunc("/chatroom/leave", leaveChatRoom)
 
-	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("/home/suitup/hackmit/HackMIT2/"))))
+	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("/home/suitup/hackmit/assets/"))))
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -118,7 +121,7 @@ type IdQuery struct {
 }
 
 func mainHandle(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "hey")
+	templates.ExecuteTemplate(w, "index.html", nil)
 }
 
 func joinChatRoom(w http.ResponseWriter, r *http.Request) {
