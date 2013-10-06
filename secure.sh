@@ -6,18 +6,16 @@ print x"
 COUNTER=1
 for i in $(ls question/1/*.in)
 do
-	CASE="PASS"
+	STATUS="PASS"
 	EXTRA=""
 	answer=$(echo $i | rev | cut -c 4- | rev)
 	answer=$answer".ans"
-	output=$(cat $i | python run_python_secure.py "$CODE")
+	OUTPUT=$(cat $i | python run_python_secure.py "$CODE")
+	INPUT=$(cat $i)
 	DIFF=$(diff <(echo $output) <(cat $answer))
 	if [ "$DIFF" != "" ] 
 	then
-	    CASE="FAIL\n"
-	    EXTRA="Returned:\n$output\nInput:\n"$(cat $i)
-	    # EXTRA+=$(cat $i)
+	    STATUS="FAIL"
 	fi
-	echo -e "Test Case $COUNTER: $CASE$EXTRA\n\n"
-	COUNTER=$[$COUNTER +1]
+	echo '{"status":'"'"$STATUS"'"', "output":'"'"$OUTPUT"'"', "input":'"'"$INPUT"'"'}'
 done
