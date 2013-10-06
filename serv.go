@@ -157,12 +157,9 @@ func asciify(ba []byte) string {
 
 func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
 	uid, _ := UIDFromSession(w, r)
-	client := clients[uid]
+	// client := clients[uid]
 
 	fmt.Println("leave ", uid)
-
-	close(client.out)
-	close(client.in)
 
 	delete(clients, uid)
 
