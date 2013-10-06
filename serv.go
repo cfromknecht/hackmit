@@ -196,6 +196,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println("inserting")
 			_, err = db.Exec("insert into users (facebook_id, username, email, level, points) values (?, ?, ?, 0, 0)", uid, "", "")
+			fmt.Println(err)
 			if err != nil {
 				fmt.Fprint(w, "{\"status\":\"failure\"}")
 				return
