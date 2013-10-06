@@ -130,7 +130,6 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 
 	prev := clients[uid]
 	if (prev != nil) {
-		close(prev.out)
 		delete(clients, uid)
 	}
 
