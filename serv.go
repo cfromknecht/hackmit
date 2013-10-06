@@ -193,6 +193,7 @@ type RequestsList struct {
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("login")
 	inputToken := r.FormValue("access_token")
 	if len(inputToken) != 0 {
 		uid := GetMe(inputToken)
