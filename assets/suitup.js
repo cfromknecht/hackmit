@@ -36,8 +36,7 @@ function chat_join(s) {
                 mode: 'python'
             });
             var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror);
-           
-
+            webrtc.joinRoom(chatroomid);
             setTimeout(chat_check, 1000);
         }
     });
@@ -52,6 +51,7 @@ function chat_leave() {
         }
     });
     chatroomid = null;
+    webrtc.leaveroom();
 }
 
 function chat_send(chat, convo) {
