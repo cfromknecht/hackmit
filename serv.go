@@ -11,8 +11,8 @@ import (
 	"database/sql"
 	_ "github.com/ziutek/mymysql/godrv"
 	// "github.com/ziutek/mymysql/mysql"
-	_ "github.com/ziutek/mymysql/native"
-	_ "github.com/ziutek/mymysql/thrsafe"
+	// _ "github.com/ziutek/mymysql/native"
+	// _ "github.com/ziutek/mymysql/thrsafe"
 	"runtime"
 )
 
