@@ -42,6 +42,7 @@ function chat_join(s) {
 }
 
 function join_room() {
+    webrtc.createRoom(chatroomid);
     webrtc.joinRoom(String(chatroomid));
 }
 
