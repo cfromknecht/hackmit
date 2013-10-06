@@ -108,7 +108,7 @@ func main() {
 	http.HandleFunc("/chatroom/join", joinChatRoom)
 	http.HandleFunc("/chatroom/leave", leaveChatRoom)
 
-	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("/home/suitup/hackmit/assets/"))))
+	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("/home/suitup/hackmit/HackMIT2/"))))
 	http.ListenAndServe(":8080", nil)
 }
 
