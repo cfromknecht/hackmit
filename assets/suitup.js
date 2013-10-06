@@ -1,4 +1,4 @@
-var su = '' ; //http://ec2-54-200-40-68.us-west-2.compute.amazonaws.com:8080';
+var su = ''; //http://ec2-54-200-40-68.us-west-2.compute.amazonaws.com:8080';
 
 var _user_details = '/user/details';
 
@@ -31,7 +31,7 @@ function chat_join(s) {
         success: function (data) {
             chatroomid = data['crid'];
             $('#firepad').html('');
-            var firepadRef = new Firebase('https://hackmitsuitup.firebaseIO.com/firepads/' + chatroomid);
+            var firepadRef = new Firebase('//hackmitsuitup.firebaseIO.com/firepads/' + chatroomid);
 
             var codeMirror = CodeMirror(document.getElementById('firepad'), {
                 lineNumbers: true,
