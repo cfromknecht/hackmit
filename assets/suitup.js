@@ -42,9 +42,7 @@ function chat_join(s) {
 }
 
 function join_room(roomid) {
-    webrtc.on('readyToCall', function () {
-        webrtc.joinRoom(roomid);
-    });
+    webrtc.joinRoom(roomid);
 }
 
 function chat_leave() {
