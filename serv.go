@@ -188,6 +188,7 @@ func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
 	client := clients[uid]
 
 	if client != nil {
+		fmt.Println("leaving")
 		delete(clients, client.otherid)
 		delete(clients, uid)
 	}
@@ -203,13 +204,12 @@ func sendMessage(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("send ", uid)
 
+	r.ParseForm()
 	message := r.FormValue("s")
-
-	// message := r.PostFormValue("message")
 
 	client := clients[uid]
 
-	if client != nil && client.out != nil {
+	if client != nil {
 		client.out <- message
 		fmt.Fprint(w, "{\"status\":\"success\"}")
 	} else {
