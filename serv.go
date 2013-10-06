@@ -8,6 +8,8 @@ import (
 	"io"
 	"net/http"
 	"encoding/json"
+	// "database/sql"
+	_ "github.com/ziutek/mymysql/godrv"
 	"github.com/ziutek/mymysql/mysql"
 	_ "github.com/ziutek/mymysql/native"
 	_ "github.com/ziutek/mymysql/thrsafe"
@@ -21,7 +23,8 @@ var store sessions.Store
 var pool *Pool
 var clients map[int64]*Client
 
-var db = mysql.New("tcp", "", "localhost:3306", "root", "", "suitup")
+var db = mysql.New("tcp", "", "localhost:3306", "root", "pass", "suitup")
+// var db, _ = sql.Open("mymysql", fmt.Sprintf("%s:%s:%s*%s/%s/%s", "tcp", "localhost", "3306", "suitup", "root", ""))
 // var tv syscall.Timeval
 
 type Pool struct {
@@ -108,6 +111,12 @@ func main() {
 	defer db.Close()
 	fmt.Println(4)
 
+	// fmt.Println("connecting...")
+	// db, err := sql.Open("mymysql", fmt.Sprintf("%s:%s:%s*%s/%s/%s", "tcp", "localhost", "3306", "suitup", "root", ""))
+	// handleError(err)
+	// defer db.Close()
+	// fmt.Println("connected")
+
 	store = sessions.NewCookieStore(authKey)
 
 	pool = newPool()
@@ -179,20 +188,27 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+type RequestsList struct {
+    Id            int64      `json:"id"`
+}
+
 func login(w http.ResponseWriter, r *http.Request) {
 	inputToken := r.FormValue("access_token")
 	if len(inputToken) != 0 {
 		uid := GetMe(inputToken)
 
-		row, _, err := db.QueryFirst("SELECT id FROM users WHERE facebook_id='%d';", uid)
+		// fmt.Println("querying")
+		// row := db.QueryRow("SELECT id FROM users WHERE facebook_id=?", uid)
+		row, _, err := db.QueryFirst("SELECT id FROM users WHERE facebook_id=%d", uid)
 		handleError(err)
 
 		if row != nil {
+			// rl := new(RequestsList)
 			fmt.Fprint(w, "{\"status\":\"success\",\"uid\":", row.Str(0), "}")
 		} else {
-			regStmt, err := db.Prepare("INSERT INTO users (facebook_id, username, email, level, points) VALUES(?, ?, ?, ?, ?);")
-			handleError(err)
-			regStmt.Run(uid, "", "", 0, 0)
+			// regStmt, err := db.Prepare("INSERT INTO users (facebook_id, username, email, level, points) VALUES(?, ?, ?, ?, ?);")
+			// handleError(err)
+			// regStmt.Run(uid, "", "", 0, 0)
 			fmt.Fprint(w, "{\"status\":\"success\"}")
 		}
 	} else {
