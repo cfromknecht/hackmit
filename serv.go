@@ -93,7 +93,7 @@ func UIDFromSession(w http.ResponseWriter, r *http.Request) (int64, error) {
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	db, _ = sql.Open("mysql", "root:@/suitup")
+	db, _ = sql.Open("mysql", "root:pass@/suitup")
 	defer db.Close()
 
 	store = sessions.NewCookieStore(authKey)
