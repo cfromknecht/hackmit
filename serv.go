@@ -169,9 +169,9 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 	
 	qjs, err := json.Marshal(chatroom.Question)
 
-	fmt.Println("qjs: ", qjs)
+	fmt.Println("qjs: ", string(qjs))
 
-	fmt.Fprint(w, "{\"status\":\"success\",\"crid\":\"", asciify(chatroom.id), "\",\"question\":", qjs, "}")
+	fmt.Fprint(w, "{\"status\":\"success\",\"crid\":\"", asciify(chatroom.id), "\",\"question\":", string(qjs), "}")
 }
 
 func asciify(ba []byte) string {
