@@ -121,7 +121,7 @@ type IdQuery struct {
 }
 
 func mainHandle(w http.ResponseWriter, r *http.Request) {
-	templates.Execute(w, "HackMIT2/index.html", nil)
+	templates.ExecuteTemplate(w, "HackMIT2/index.html", nil)
 }
 
 func joinChatRoom(w http.ResponseWriter, r *http.Request) {
