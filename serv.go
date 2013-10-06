@@ -9,7 +9,6 @@ import (
 	"github.com/gorilla/sessions"
 	"io"
 	"net/http"
-	"encoding/json"
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"runtime"
