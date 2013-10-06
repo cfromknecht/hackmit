@@ -120,11 +120,6 @@ func main() {
 	http.ListenAndServe(":8080", nil)
 }
 
-type IdQuery struct {
-    Id            int64      `json:"id"`
-
-}
-
 func mainHandle(w http.ResponseWriter, r *http.Request) {
 	templates.ExecuteTemplate(w, "index.html", nil)
 }
@@ -132,6 +127,8 @@ func mainHandle(w http.ResponseWriter, r *http.Request) {
 func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 	uid, err := UIDFromSession(w, r)
 	handleError(err)
+
+	fmt.Println("join ", uid)
 
 	retChan := make(chan *Room)
 	client := &Client{
@@ -162,6 +159,8 @@ func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
 	uid, _ := UIDFromSession(w, r)
 	client := clients[uid]
 
+	fmt.Println("leave ", uid)
+
 	close (client.out)
 
 	client.in = nil
@@ -174,6 +173,8 @@ func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
 func sendMessage(w http.ResponseWriter, r *http.Request) {
 	uid, err := UIDFromSession(w, r)
 	handleError(err)
+
+	fmt.Println("send ", uid)
 
 	message := r.FormValue("s")
 
@@ -192,6 +193,8 @@ func sendMessage(w http.ResponseWriter, r *http.Request) {
 func checkMessage(w http.ResponseWriter, r *http.Request) {
 	uid, err := UIDFromSession(w, r)
 	handleError(err)
+
+	fmt.Println("check ", uid)
 
 	client := clients[uid]
 
