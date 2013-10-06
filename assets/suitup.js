@@ -18,11 +18,7 @@ function init_user_details() {
 $(document).ready(function () {
   //  login();
     //  init_user_details();
-   var webrtc = new SimpleWebRTC({
-            localVideoEl: 'localVideo',
-            remoteVideosEl: 'remoteVideo',
-            autoRequestMedia: true
-            }); 
+
 });
 
 
@@ -40,6 +36,11 @@ function chat_join(s) {
                 mode: 'python'
             });
             var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror);
+            var webrtc = new SimpleWebRTC({
+                localVideoEl: 'localVideo',
+                remoteVideosEl: 'remoteVideo',
+                autoRequestMedia: true
+            }); 
             webrtc.joinRoom(chatroomid);
             setTimeout(chat_check, 1000);
         }
