@@ -39,7 +39,10 @@ function chat_join(s) {
             });
             setTimeout(join_room, 2000);
             chat_check_id = setTimeout(chat_check, 1000);
-            question_new();
+            //question_new();
+
+            $('.questions_title').text(data['question']['title']);
+            $('.questions_body').html(data['question']['body']);
         }
     });
 }
