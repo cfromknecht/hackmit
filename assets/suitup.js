@@ -111,7 +111,7 @@ function chat_check() {
 
 
 function question_new() {
-    $.getJSON(su + '/question/new', { data: {'cvid': chatroomid }}, function (data) {
+    $.getJSON(su + '/question/new', {'cvid': chatroomid }, function (data) {
         $('.questions_title').text(data['title']);
         $('.questions_body').html(data['body']);
     }).error(function (jqXhr, textStatus, error) {
