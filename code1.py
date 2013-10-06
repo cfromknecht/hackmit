@@ -37,6 +37,8 @@ def quest(user1,user2):
     return l,i5 #returning the level of the required question, and a set of tuples of interests with priorities
 
 def modify(user1,user2,lev,sta,totlev):
+    #this function is called when users finished a problem. they either solved it (sta=1) , skipped it (sta=0), coudn't solve(sta=-1)
+    #used to update points and level of users
     #sta is 1 if win/solved, 0 if tie/skip , -1 if loss/coudn't solve 
     #lev is level of problem attempted
     l1=user1.level
