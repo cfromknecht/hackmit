@@ -27,7 +27,7 @@ function chat_join(s) {
         url: su + '/chatroom/join',
         success: function (data) {
             console.log(data);
-            console.log(data.crid);
+            console.log(data["crid"]);
             chatroomid = data['crid'];
             $('#firepad').html('');
             var firepadRef = new Firebase('//hackmitsuitup.firebaseIO.com/firepads/' + chatroomid);
