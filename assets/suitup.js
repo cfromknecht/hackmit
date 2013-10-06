@@ -37,7 +37,7 @@ function chat_join(s) {
             var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror);
             
             setTimeout(join_room, 2000);
-            setTimeout(chat_check, 1000);
+            chat_check_id = setTimeout(chat_check, 1000);
             question_new();
         }
     });
@@ -49,6 +49,7 @@ function join_room() {
 }
 
 function chat_leave() {
+    clearTimeout(chat_check_id);
     $.ajax({
         type: "GET",
         url: su + '/chatroom/leave',
