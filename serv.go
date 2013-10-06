@@ -3,7 +3,6 @@ package main
 import (
 	_ "time"
 	"crypto/rand"
-	// "encoding/binary"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/sessions"
@@ -59,12 +58,9 @@ func (p *Pool) Pair() {
 		if err != nil || n != 32 {
 			return
 		}
-		// crId, _ := binary.Varint(b)
 
 		room := &Room{b, c1, c2}
-
-		fmt.Println("ChatroomID: ", b)
-
+		
 		c1.in, c2.in = c2.out, c1.out
 
 		c1.retChan <- room
@@ -207,10 +203,19 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 }
 
 type Question struct {
-	Id 	int64
-	Title string
-	Body string
-	Difficulty int
+	Id 	int64			`json:"id"`
+	Title string		`json:"title"`
+	Body string			`json:"body"`
+	Difficulty int 		`json:"diff"`
+}
+
+type User struct {
+    Id            	int64      	`json:"id"`
+    FacebookId  	string		`json:fbid"`
+    Username 		string		`json:username"`
+    Email 			string		`json:email"`
+    Level 			int64		`json:lvl"`
+    Score 			int64		`json:score"`
 }
 
 func newQuestion(w http.ResponseWriter, r *http.Request) {
@@ -240,8 +245,8 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 		// row := db.QueryRow("SELECT id FROM users")
 		row := db.QueryRow("SELECT id FROM users WHERE facebook_id=?", string(uid))
-		iq := new(IdQuery)
-		err := row.Scan(&iq.Id)
+		user := new(User)
+		err := row.Scan(&user.Id)
 
 		if err != nil {
 			_, err = db.Exec("INSERT INTO users (facebook_id, username, email, level, points) VALUES (?, ?, ?, 0, 0)", uid, "", "")
@@ -250,7 +255,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 				return
 			} else {
 				row = db.QueryRow("SELECT id FROM users WHERE facebook_id=?", string(uid))
-				err = row.Scan(&iq.Id)
+				err = row.Scan(&user.Id)
 				if err != nil {
 					fmt.Fprint(w, STATUS_FAILURE)
 					return
@@ -260,7 +265,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 		}
 
 		session, _ := store.Get(r, "session")
-		session.Values["userid"] = iq.Id
+		session.Values["userid"] = user.Id
 		session.Save(r, w)
 
 		fmt.Fprint(w, "{\"status\":\"success\"}")
