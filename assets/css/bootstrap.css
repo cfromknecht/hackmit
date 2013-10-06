@@ -188,8 +188,8 @@ html {
 }
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 10px;
-  line-height: 1.0;
+  font-size: 14px;
+  line-height: 1.428571429;
   color: #333333;
   background-color: #ffffff;
 }
@@ -4130,9 +4130,9 @@ a.list-group-item.active > .badge,
 .jumbotron {
   padding: 30px;
   margin-bottom: 30px;
-  font-size: 21px;
+  font-size: 14px;
   font-weight: 200;
-  line-height: 2.1428571435;
+  line-height: 1.1428571435;
   color: inherit;
   background-color: #eeeeee;
 }
