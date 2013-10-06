@@ -15,5 +15,5 @@ do
 	then
 	    STATUS="FAIL"
 	fi
-	printf "{\"status\":\"$STATUS\", \"output\":'$OUTPUT', \"input\":'$INPUT'}"
+	printf "{\"status\":\"$STATUS\", \"output\":'$OUTPUT', \"input\":'$INPUT'},"
 done
