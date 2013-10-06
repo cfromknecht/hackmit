@@ -160,19 +160,24 @@ func asciify(ba []byte) string {
 }
 
 func testCode(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
 	code := r.PostFormValue("submission")
-	cvid := r.PostFormValue("cvid")
-	qid := str(1)
+	_ = r.PostFormValue("cvid")
+	qid := string(1)
 	app := "./secure.sh"
-	cmd, err := exec.Run(app, []string{app, qid, code}, nil, "", exec.DevNull, exec.Pipe, exec.Pipe)
-	if (err != nil) {
-       fmt.Fprintln(w, "{\"status\":\"failure\"}")
-       return
-    }
+	cmd := exec.Command(app, qid, code)
+	// cmd, err := exec.Run(app, []string{app, qid, code}, nil, "", .DevNull, exec.Pipe, exec.Pipe)
+	// if (err != nil) {
+ //       fmt.Fprintln(w, "{\"status\":\"failure\"}")
+ //       return
+ //    }
     var b bytes.Buffer
-    io.Copy(&b, cmd.Stdout)
-    fmt.Println(w, "{\"status\":\"success\", \"data\": ", b.String(), "}" )
-    cmd.Close()
+    cmd.Stdout = &b
+    err := cmd.Run()
+    if err != nil {
+    	fmt.Println(err)
+    }
+    fmt.Fprint(w, "{\"status\":\"success\", \"data\": ", b.String(), "}" )
     return
 }
 
