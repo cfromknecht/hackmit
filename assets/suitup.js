@@ -22,8 +22,6 @@ $(document).ready(function () {
 });
 
 
-var chatroomid = -1;
-
 function chat_join(s) {
     $.ajax({
         type: "GET",
@@ -53,7 +51,7 @@ function chat_leave() {
             $('#firepad').html('');
         }
     });
-    chatroomid = -1;
+    chatroomid = null;
 }
 
 function chat_send(chat, convo) {
