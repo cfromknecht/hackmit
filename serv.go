@@ -175,19 +175,22 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 	client := clients[uid]
 
 	if client != nil {
-		fmt.Println("waiting")
+		fmt.Println("client found")
 		select {
 		case message, ok := <- clients[uid].in:
+			fmt.Println("message pulled from channel")
 			if ok {
 				fmt.Fprint(w, "{\"status\":\"success\"}-", message)
 			} else {
 				fmt.Fprint(w, "{\"status\":\"failure\"}")
 			}
 		default:
+			fmt.Println("default")
 			fmt.Fprint(w, "")
 		}
 	
 	} else {
+		fmt.Println("client not found")
 		fmt.Fprint(w, "{\"status\":\"failure\"}")
 	}
 }
@@ -195,33 +198,24 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 
 
 func login(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("login")
 	inputToken := r.FormValue("access_token")
 	if len(inputToken) != 0 {
 		uid := GetMe(inputToken)
 
-		fmt.Println("querying for: ", uid)		
 		// row := db.QueryRow("SELECT id FROM users")
 		row := db.QueryRow("SELECT id FROM users WHERE facebook_id=?", string(uid))
-		fmt.Println("returned")
 		iq := new(IdQuery)
 		err := row.Scan(&iq.Id)
 
 		if err != nil {
-			fmt.Println("inserting")
 			_, err = db.Exec("insert into users (facebook_id, username, email, level, points) values (?, ?, ?, 0, 0)", uid, "", "")
-			fmt.Println(err)
 			if err != nil {
 				fmt.Fprint(w, "{\"status\":\"failure\"}")
 				return
 			} else {
-				fmt.Println("searching again")
-
 				row = db.QueryRow("SELECT id FROM users WHERE facebook_id=?", string(uid))
 				err = row.Scan(&iq.Id)
 				if err != nil {
-					fmt.Println("scan failed")
-
 					fmt.Fprint(w, "{\"status\":\"failure\"}")
 					return
 				}
