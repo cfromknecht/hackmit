@@ -2,7 +2,7 @@ PROBLEM="$1"
 CODE="$2"
 
 COUNTER=1
-for i in $(ls question/1/*.in)
+for i in $(ls ~/hackmit/question/1/*.in)
 do
 	STATUS="PASS"
 	EXTRA=""
