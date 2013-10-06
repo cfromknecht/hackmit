@@ -181,7 +181,7 @@ func sendMessage(w http.ResponseWriter, r *http.Request) {
 
 	client := clients[uid]
 
-	if client != nil {
+	if client != nil && client.out != nil {
 		client.out <- message
 		fmt.Fprint(w, "{\"status\":\"success\"}")
 	} else {
@@ -204,7 +204,6 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 			} else {
 				if client.out != nil {
 					close(client.out)
-
 				}
 				fmt.Fprint(w, "{\"status\":\"failure\"}")
 			}
