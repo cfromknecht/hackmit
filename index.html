@@ -42,6 +42,13 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"> </script> 
     <script src="http://simplewebrtc.com/latest.js"></script>
      <script src="assets/suitup.js">  </script>
+    <script type="text/javascript">
+      var webrtc = new SimpleWebRTC({
+            localVideoEl: 'localVideo',
+            remoteVideosEl: 'remoteVideo',
+            autoRequestMedia: true
+      });
+      </script>
 
 <script src="//cdn.firebase.com/v0/firebase.js"></script>
 
@@ -123,15 +130,6 @@
 
           <div style="" class="col-md-1 ">
 
-<script type="text/javascript">
-    var webrtc = new SimpleWebRTC({
-            localVideoEl: 'localVideo',
-            remoteVideosEl: 'remoteVideo',
-            autoRequestMedia: true
-    });
-    
-    
-</script>
 
 <div  id="remoteVideo"></div> 
 <video height="100" id="localVideo"></video>
