@@ -3,7 +3,6 @@ package main
 import (
 	_ "time"
 	"crypto/rand"
-	// "encoding/binary"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/sessions"
@@ -52,19 +51,20 @@ func (p *Pool) Pair() {
 	for {
 		c1, c2 := <-p.in, <-p.in
 
+		for c1.id == c2.id {
+			c2 = <- p.in
+		}
+
 		fmt.Println("match found for ", c1.id, " and ", c2.id)
 
-		b := make([]byte, 1)
+		b := make([]byte, 32)
 		n, err := io.ReadFull(rand.Reader, b)
-		if err != nil || n != 1 {
+		if err != nil || n != 32 {
 			return
 		}
-		// crId, _ := binary.Varint(b)
 
 		room := &Room{b, c1, c2}
-
-		fmt.Println("ChatroomID: ", b)
-
+		
 		c1.in, c2.in = c2.out, c1.out
 
 		c1.retChan <- room
@@ -147,12 +147,27 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("joinChatRoom-chatroom.id: ", chatroom.id)
 
-	fmt.Fprint(w, "{\"status\":\"success\",\"crid\":\"", string(chatroom.id), "\"}")
+	fmt.Fprint(w, "{\"status\":\"success\",\"crid\":\"", asciify(chatroom.id), "\"}")
+}
+
+func asciify(ba []byte) string {
+	ret := make([]byte, len(ba))
+	for i, b := range ba {
+		ret[i] = (b % 26) + 97
+	}
+	return string(ret)
 }
 
 func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
 	uid, _ := UIDFromSession(w, r)
-	delete(clients, uid)
+	client := clients[uid]
+
+	close (client.out)
+
+	client.in = nil
+	client.out = make(chan string)
+	pool.in <- client
+
 	fmt.Fprint(w, "{\"status\":\"success\"}")
 }
 
@@ -166,7 +181,7 @@ func sendMessage(w http.ResponseWriter, r *http.Request) {
 
 	client := clients[uid]
 
-	if client != nil {
+	if client != nil && client.out != nil {
 		client.out <- message
 		fmt.Fprint(w, "{\"status\":\"success\"}")
 	} else {
@@ -182,12 +197,13 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 
 	if client != nil {
 		select {
-		case message, ok := <- clients[uid].in:
+		case message, ok := <- client.in:
 			// fmt.Println("message pulled from channel")
 			if ok {
 				fmt.Fprint(w, message)
 			} else {
-				fmt.Fprint(w, "")
+				client.out = nil
+				fmt.Fprint(w, "{\"status\":\"failure\"}")
 			}
 		default:
 			fmt.Fprint(w, "")
@@ -199,16 +215,25 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 }
 
 type Question struct {
-	id 	int64
-	title string
-	body string
-	difficulty int
+	Id 	int64			`json:"id"`
+	Title string		`json:"title"`
+	Body string			`json:"body"`
+	Difficulty int 		`json:"diff"`
 }
 
-func newQuestion (w http.ResponseWriter, r *http.Request) {
+type User struct {
+    Id            	int64      	`json:"id"`
+    FacebookId  	string		`json:fbid"`
+    Username 		string		`json:username"`
+    Email 			string		`json:email"`
+    Level 			int64		`json:lvl"`
+    Score 			int64		`json:score"`
+}
+
+func newQuestion(w http.ResponseWriter, r *http.Request) {
 	row := db.QueryRow("SELECT * FROM questions ORDER BY RAND()")
 	q := new(Question)
-	err := row.Scan(&q.id, &q.title, &q.body, &q.difficulty)
+	err := row.Scan(&q.Id, &q.Title, &q.Body, &q.Difficulty)
 
 	if err != nil {
 		fmt.Println(err)
@@ -232,8 +257,8 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 		// row := db.QueryRow("SELECT id FROM users")
 		row := db.QueryRow("SELECT id FROM users WHERE facebook_id=?", string(uid))
-		iq := new(IdQuery)
-		err := row.Scan(&iq.Id)
+		user := new(User)
+		err := row.Scan(&user.Id)
 
 		if err != nil {
 			_, err = db.Exec("INSERT INTO users (facebook_id, username, email, level, points) VALUES (?, ?, ?, 0, 0)", uid, "", "")
@@ -242,7 +267,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 				return
 			} else {
 				row = db.QueryRow("SELECT id FROM users WHERE facebook_id=?", string(uid))
-				err = row.Scan(&iq.Id)
+				err = row.Scan(&user.Id)
 				if err != nil {
 					fmt.Fprint(w, STATUS_FAILURE)
 					return
@@ -252,7 +277,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 		}
 
 		session, _ := store.Get(r, "session")
-		session.Values["userid"] = iq.Id
+		session.Values["userid"] = user.Id
 		session.Save(r, w)
 
 		fmt.Fprint(w, "{\"status\":\"success\"}")

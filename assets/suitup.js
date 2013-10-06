@@ -34,10 +34,16 @@ function chat_join(s) {
                 mode: 'python'
             });
             var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror);
-            webrtc.joinRoom(chatroomid);
+            
+            setTimeout(join_room, 2000);
             setTimeout(chat_check, 1000);
         }
     });
+}
+
+function join_room() {
+    // webrtc.createRoom(chatroomid);
+    webrtc.joinRoom(String(chatroomid));
 }
 
 function chat_leave() {
@@ -45,11 +51,18 @@ function chat_leave() {
         type: "GET",
         url: su + '/chatroom/leave',
         success: function (data) {
-            $('#firepad').html('');
+            sts = JSON.parse(data).status;
+            console.log("sts: " + sts);
+            if (sts == "failure") {
+                chat_join()
+            }
+            else {
+                $('#firepad').html('');
+            }
         }
     });
     chatroomid = null;
-    webrtc.leaveroom();
+    webrtc.leaveRoom(webrtc.roomName);
 }
 
 function chat_send(chat, convo) {
@@ -67,7 +80,6 @@ function chat_check() {
         type: "GET",
         url: su + '/message/check',
         success: function (data) {
-            
             if (data != '') {
                 console.log(data);
                 $('#convo').val($('#convo').val() + '\nOther: ' + data);
