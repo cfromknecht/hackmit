@@ -193,7 +193,7 @@ func testCode(w http.ResponseWriter, r *http.Request) {
     	return
     }
     fmt.Println(string(out))
-    fmt.Fprint(w, "{\"status\":\"success\", \"data\": [", string(out), "]}" )
+    fmt.Fprint(w, "{\"status\":\"success\", \"data\": \"", string(out), "\"}" )
     return
 }
 
