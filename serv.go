@@ -54,9 +54,9 @@ func (p *Pool) Pair() {
 
 		fmt.Println("match found for ", c1.id, " and ", c2.id)
 
-		b := make([]byte, 32)
+		b := make([]byte, 1)
 		n, err := io.ReadFull(rand.Reader, b)
-		if err != nil || n != 32 {
+		if err != nil || n != 1 {
 			return
 		}
 		// crId, _ := binary.Varint(b)
