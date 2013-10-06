@@ -36,7 +36,9 @@ function chat_join(s) {
             });
             firepad = Firepad.fromCodeMirror(firepadRef, codeMirror);
             webrtc.on('readyToCall', function () {
+                $('video').css('height', '200px');
             });
+
             setTimeout(join_room, 2000);
             chat_check_id = setTimeout(chat_check, 1000);
             //question_new();
