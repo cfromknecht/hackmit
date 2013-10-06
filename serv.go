@@ -38,6 +38,7 @@ type Pool struct {
 
 type Client struct {
 	id      int64
+	otherid int64
 	in      chan string
 	out     chan string
 	retChan chan *Room
@@ -66,7 +67,8 @@ func (p *Pool) Pair() {
 		}
 
 		room := &Room{b, c1, c2}
-		
+
+		c1.otherid, c2.otherid = c2.id, c1.id
 		c1.in, c2.in = c2.out, c1.out
 
 		c1.retChan <- room
@@ -161,8 +163,8 @@ func asciify(ba []byte) string {
 
 func testCode(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	code := r.PostFormValue("submission")
-	_ = r.PostFormValue("cvid")
+	code := r.FormValue("submission")
+	_ = r.FormValue("cvid")
 	qid := string(1)
 	app := "./secure.sh"
 	cmd := exec.Command(app, qid, code)
@@ -186,6 +188,7 @@ func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
 	client := clients[uid]
 
 	if client != nil {
+		close(clients[client.otherid].out)
 		delete(clients, uid)
 	}
 
