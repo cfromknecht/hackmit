@@ -51,14 +51,7 @@ function chat_leave() {
         type: "GET",
         url: su + '/chatroom/leave',
         success: function (data) {
-            sts = JSON.parse(data).status;
-            console.log("sts: " + sts);
-            if (sts == "failure") {
-                chat_join()
-            }
-            else {
-                $('#firepad').html('');
-            }
+            $('#firepad').html('');
         }
     });
     chatroomid = null;
@@ -80,11 +73,17 @@ function chat_check() {
         type: "GET",
         url: su + '/message/check',
         success: function (data) {
-            if (data != '') {
-                console.log(data);
-                $('#convo').val($('#convo').val() + '\nOther: ' + data);
+            sts = JSON.parse(data).status;
+            if ( sts == "failure") {
+                chat_join();
+            } else {
+                if(JSON.parse(data).s != "") {
+                    $('#convo').val($('#convo').val() + '\nOther: ' + JSON.parse(data).s);
+                    setTimeout(chat_check, 1000);
+                } else {
+                    setTimeout(chat_check, 2000);
+                }
             }
-            setTimeout(chat_check, 1000);
         }
     });
 }
