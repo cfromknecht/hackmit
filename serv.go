@@ -59,8 +59,6 @@ func (p *Pool) Pair() {
 		}
 		crId, _ := binary.Varint(b)
 
-		fmt.Print
-
 		room := &Room{c1, c2}
 
 		c1.in, c2.in = c2.out, c1.out
