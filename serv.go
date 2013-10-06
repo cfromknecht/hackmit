@@ -187,11 +187,6 @@ func testCode(w http.ResponseWriter, r *http.Request) {
 	_ = r.FormValue("cvid")
 	qid := "1"
 	app := "secure.sh"
-	// out1, err1 := exec.Command("/usr/bin/secure", qid, code).Output()
-	// if err1 != nil {
- //    	fmt.Println(err1)
-	// }
-	// fmt.Printf("The date is %s\n", out1)
 	out, err := exec.Command("bash", "-c", app + " " + qid + " '" + code + "'").Output()
     if err != nil {
     	fmt.Println(err)

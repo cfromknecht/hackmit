@@ -131,7 +131,10 @@ function question_submit() {
         data: {'submission': firepad.getText(), 'cvid': chatroomid },
         url: su + '/question/submit',
         success: function (data) {
-            
+            if (JSON.parse(data).status == "success") {
+                dt = JSON.parse(data).data;
+                $('#convo').html($('#convo').html() + '<br /><strong style="color:black">System:</strong> ' + dt;
+            }
         }
     });
 }
