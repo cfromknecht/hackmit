@@ -48,7 +48,7 @@ type Room struct {
 	id      []byte
 	client1 *Client
 	client2 *Client
-	question *Question
+	Question *Question
 }
 
 type Question struct {
@@ -167,7 +167,9 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("joinChatRoom-chatroom.id: ", chatroom.id)
 	
-	qjs, err := json.Marshal(chatroom.question)
+	qjs, err := json.Marshal(chatroom.Question)
+
+	fmt.Println("qjs: ", qjs)
 
 	fmt.Fprint(w, "{\"status\":\"success\",\"crid\":\"", asciify(chatroom.id), "\",\"question\":", qjs, "}")
 }
