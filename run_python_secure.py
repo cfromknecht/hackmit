@@ -1,7 +1,7 @@
 import sys
 from sandbox import Sandbox, SandboxConfig
 
-if __name__ == "main":
+if __name__ == "__main__":
 	'''
 	Will run a given code in sandbox (stream stdio from cmd)
 	arg[1] = code given
