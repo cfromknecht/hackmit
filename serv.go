@@ -206,16 +206,16 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 }
 
 type Question struct {
-	id 	int64
-	title string
-	body string
-	difficulty int
+	Id 	int64
+	Title string
+	Body string
+	Difficulty int
 }
 
-func newQuestion (w http.ResponseWriter, r *http.Request) {
+func newQuestion(w http.ResponseWriter, r *http.Request) {
 	row := db.QueryRow("SELECT * FROM questions ORDER BY RAND()")
 	q := new(Question)
-	err := row.Scan(&q.id, &q.title, &q.body, &q.difficulty)
+	err := row.Scan(&q.Id, &q.Title, &q.Body, &q.Difficulty)
 
 	if err != nil {
 		fmt.Println(err)
