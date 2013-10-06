@@ -132,7 +132,7 @@ func main() {
 
 	http.HandleFunc("/chatroom/join", joinChatRoom)
 	http.HandleFunc("/chatroom/leave", leaveChatRoom)
-	http.ListenAndServe(":6969", nil)
+	http.ListenAndServe(":8080", nil)
 }
 
 func mainHandle(w http.ResponseWriter, r *http.Request) {
@@ -207,7 +207,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Println("querying")
 		// row := db.QueryRow("SELECT id FROM users WHERE facebook_id=?", uid)
-		row, _, err := db.QueryFirst("SELECT id FROM users WHERE facebook_id='%d';", uid)
+		row, _, err := db.QueryFirst("SELECT id FROM users WHERE facebook_id='%s';", uid)
 		handleError(err)
 
 		fmt.Println(row)
