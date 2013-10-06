@@ -186,8 +186,12 @@ func testCode(w http.ResponseWriter, r *http.Request) {
 	code := r.FormValue("submission")
 	_ = r.FormValue("cvid")
 	qid := string(1)
-	app := "./secure.sh"
-	fmt.Println("Code: ", code)
+	app := "secure.sh"
+	out, err := exec.Command(app, qid, code).Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("The date is %s\n", out)
 	cmd := exec.Command(app, qid, code)
     out, err := cmd.Output()
     if err != nil {
