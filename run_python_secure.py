@@ -16,7 +16,6 @@ if __name__ == "__main__":
 	print "Will run: ", code
 	try:
 		sandbox = Sandbox(SandboxConfig('stdin', 'stdout'))
-		sandbox.io(sys.stdin, sys.stdout)
 		sandbox.execute(code)
 	except Exception, e:
 		print e
