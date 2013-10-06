@@ -43,7 +43,7 @@ function chat_join(s) {
 
 function join_room() {
     webrtc.joinRoom(chatroomid);
-    console.log("Joined: " + roomid);
+    console.log("Joined: " + chatroomid);
 }
 
 function chat_leave() {
