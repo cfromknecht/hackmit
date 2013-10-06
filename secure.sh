@@ -10,12 +10,12 @@ do
 	EXTRA=""
 	answer=$(echo $i | rev | cut -c 4- | rev)
 	answer=$answer".ans"
-	OUTPUT=$(cat $i | python run_python_secure.py "$CODE")
+	OUTPUT=$(cat $i | python run_python_secure.py "$CODE" | perl -pe 's/\\/\\\\/g' | perl -pe 's/"/\\"/g')
 	INPUT=$(cat $i)
 	DIFF=$(diff <(echo $output) <(cat $answer))
 	if [ "$DIFF" != "" ] 
 	then
 	    STATUS="FAIL"
 	fi
-	echo '{"status":'"'"$STATUS"'"', "output":'"'"$OUTPUT"'"', "input":'"'"$INPUT"'"'}'
+	printf "{\"status\":\"%q\", \"output\":\"$OUTPUT\", \"input\":\"$INPUT\"}" $STATUS
 done
