@@ -15,7 +15,8 @@ do
 	then
 		echo $DIFF
 	    CASE="FAIL\n"
-	    EXTRA=$(cat $i)
+	    EXTRA=$DIFF
+	    EXTRA+=$(cat $i)
 	fi
 	echo -e "Test Case $COUNTER: $CASE$EXTRA\n\n"
 	COUNTER=$[$COUNTER +1]
