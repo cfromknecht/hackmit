@@ -194,11 +194,11 @@ func testCode(w http.ResponseWriter, r *http.Request) {
 	// fmt.Printf("The date is %s\n", out1)
 	out, err := exec.Command("bash", "-c", app + " " + qid + " '" + code + "'").Output()
     if err != nil {
-    	fmt.Println("LOL", err)
+    	fmt.Println(err)
     	return
     }
     fmt.Println(string(out))
-    fmt.Fprint(w, "{\"status\":\"success\", \"data\": \"", string(out), "\"}" )
+    fmt.Fprint(w, "{\"status\":\"success\", \"data\": [", string(out), "]}" )
     return
 }
 
