@@ -51,6 +51,10 @@ func (p *Pool) Pair() {
 	for {
 		c1, c2 := <-p.in, <-p.in
 
+		for c1.id == c2.id {
+			c2 = <- p.in
+		}
+
 		fmt.Println("match found for ", c1.id, " and ", c2.id)
 
 		b := make([]byte, 32)
