@@ -135,6 +135,7 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 		id:      uid,
 		in:      nil,
 		out:     make(chan string, MESSAGE_QUEUE_SIZE),
+		retChan: retChan,
 	}
 
 	clients[uid] = client
