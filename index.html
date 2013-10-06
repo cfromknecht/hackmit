@@ -145,7 +145,7 @@
 
 
            </div> 
-           <div style=" border-width: 2px; border: solid; border-color: #e0e0e0; " class="col-md-10 col-md-offset-1">
+           <div style=" overflow-y:scroll; height:200px; border-width: 2px; border: solid; border-color: #e0e0e0; " class="col-md-10 col-md-offset-1">
                 <strong>Question: <span class="questions_title"></span></strong>
                 <div class="questions_body">Please wait...</div> 
            </div>
@@ -192,12 +192,12 @@
             
     
 <div class="col-md-6 col-md-offset-1"> 
-  <button onClick="?_submit" type="button" class="btn btn-primary">Submit</button>
+  <button style="position: absolute;" onClick="?_submit" type="button" class="btn btn-primary">Submit</button>
   
 <div style="padding-left: 92px;" class="row"> 
 
 <div style="padding-left:14px;" class="col-md-8 col-md-offset">
-<textarea readonly id="convo" rows="18" cols="62">  </textarea> 
+<div style="height:500px; width:460px; overflow-y:scroll; background:white; " id="convo" >  </div> 
 </div> 
  </div>
 
@@ -206,6 +206,7 @@
  <div style="padding-top: 2px; padding-left: 76px;" class="row"> 
  <center> 
 &nbsp; <button onClick="chat_leave()" style="height: 97px" type="button" class="btn btn-default btn-lg .btn-block">Stop</button>
+<button onClick="chat_join()" style="display:none; height: 97px" type="button" class="btn btn-default btn-lg .btn-block">Join</button>
   
 <textarea id="chat" rows="5" cols="41" placeholder="Type Here..."> </textarea> 
 
