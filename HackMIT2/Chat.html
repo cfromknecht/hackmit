@@ -1,0 +1,250 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.png">
+
+
+
+
+    <style>
+              .firepad {
+      width: 650px;
+      height: 500px;
+      background-color: #ffffff; 
+    }
+
+    /* Note: CodeMirror applies its own styles which can be customized in the same way.
+       To apply a background to the entire editor, we need to also apply it to CodeMirror. */
+    .CodeMirror {
+      background-color: #ffffff;
+    }
+        </style>
+
+
+    <title>HackMIT</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../suitup/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+ 
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"> </script> 
+     <script src="http://web.mit.edu/ambhave/www/suitup/suitup.js">  </script>
+
+<script src="https://cdn.firebase.com/v0/firebase.js"></script>
+
+        <!-- Download from http://codemirror.net/codemirror.zip -->
+        <link rel="stylesheet" href="codemirror.css" />
+        <script src="codemirror.js"></script>
+
+        <!-- Download from http://www.firepad.io/firepad.zip -->
+        <link rel="stylesheet" href="firepad.css" />
+        <script src="firepad.js"></script>
+
+        <script src="python.js"></script>
+
+  </head>
+
+  <body>
+
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand navbar-btn" href="#">SuitUp</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <!--<ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+
+              </ul>
+            </li> --> 
+          </ul>
+
+          <div style="color: white" class="navbar-form navbar-right">
+
+<img  class="user_photourl" />
+           <span class="user_username"></div> <!--- <button style="display:none" type="button" class="btn btn-default btn-xs btn navbar-btn pLoginDone" onClick="logout()"> Log Out </button> --> 
+              
+
+          </div>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+
+<div  class="jumbotron pLoginBad">
+      <div class="container">
+        <center> 
+<h1> Suit Up </h1> </br> 
+ <button onclick="login()"  type="button" class="btn btn-primary btn-lg">Get Started</button>
+</center> 
+
+      </div> 
+    </div> 
+
+<div  class="jumbotron pLoginWait">
+      <div class="container">
+      </br> 
+        <center> 
+<img src="http://www.fernandotrujano.com/suitup/loader.GIF" /> 
+</center> 
+
+      </div> 
+    </div> 
+
+    <div  style="display:none;" class="jumbotron pLoginDone">
+      <div class="container">
+        <div class="row"> 
+           &nbsp;
+        </div> 
+
+        <div class="row"> 
+
+          <div style="" class="col-md-1 ">
+
+
+
+<script src="http://simplewebrtc.com/latest.js"></script>
+<script>
+var webrtc = new SimpleWebRTC({
+        localVideoEl: 'localVideo',
+        remoteVideosEl: 'remoteVideo',
+        autoRequestMedia: true
+});
+
+webrtc.on('readyToCall', function () {
+        webrtc.joinRoom('My room name');
+});
+</script>
+
+
+
+
+<div  id="remoteVideo"></div> 
+<video height="100" id="localVideo"></video>
+   
+
+
+   <!--
+<div style="height: 300px width: 100px; " id="localVideo" muted></video>
+<div  id="remoteVideo"></div>   <div  id="remoteVideo"></div> 
+--> 
+
+
+           </div> 
+           <div style=" border-width: 2px; border: solid; border-color: #e0e0e0; " class="col-md-10 col-md-offset-1"> Quesiton: How much wood would a wood chuck chuck if a wood chuck could chuck wood?  </div> 
+  
+        </div> 
+
+
+
+
+
+        <div style="padding-top:10px;" class="row"> 
+            <div style=" " class="col-md-5">
+
+              
+
+
+
+        <div style="" id="firepad"></div>
+        <script>
+            var firepadRef = new Firebase('https://hackmitsuitup.firebaseIO.com/firepads/test');
+            var codeMirror = CodeMirror(document.getElementById('firepad'), { 
+              lineNumbers: true, 
+              mode: 'python'
+            });
+
+            var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror);
+        </script>
+</div> 
+
+
+
+<!-- <div class="col-md-6"> 
+
+  <button style="" type="button" class="btn btn-primary">Compile</button>
+</br> 
+</div>  --> 
+
+        
+
+
+
+        
+            
+    
+<div class="col-md-6 col-md-offset-1"> 
+<div style="padding-left: 42px;" class="row"> 
+<div style="padding-left:48px;" class="col-md-8 col-md-offset">
+<textarea readonly id="convo" rows="7" cols="52"> Hi there </textarea> 
+</div> 
+ </div>
+
+</hr>
+
+ <div style="padding-top: 2px; padding-left: 76px;" class="row"> 
+ <center> 
+&nbsp; <button onClick="chat_leave()" style="height: 97px" type="button" class="btn btn-default btn-lg .btn-block">Stop</button>
+  
+<textarea id="chat" rows="2" cols="35"> Type here</textarea> 
+
+<button onClick="chat_send('chat', 'convo')" style="height: 97px" type="button" class="btn btn-default btn-lg .btn-block">Send</button>
+
+  </centeR> 
+ </div> 
+
+ 
+</div> 
+
+
+
+
+
+
+
+        </div> 
+
+
+
+
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Example row of columns -->
+      
+
+      <hr>
+
+      <footer>
+        <p>&copy; SuitUp 2013</p>
+      </footer>
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+   
+  
+  </body>
+</html>
