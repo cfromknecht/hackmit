@@ -1,5 +1,5 @@
 PROBLEM="1"
-CODE="import sys
+CODE="import os
 x = raw_input()
 print x"
 
