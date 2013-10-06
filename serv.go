@@ -151,10 +151,11 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 }
 
 func asciify(ba []byte) string {
+	ret := make([]byte, len(ba))
 	for i, b := range ba {
-		ba[i] = (b % 26) + 97
+		ret[i] = (b % 26) + 97
 	}
-	return string(ba)
+	return string(ret)
 }
 
 func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
