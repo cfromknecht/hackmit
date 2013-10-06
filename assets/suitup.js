@@ -41,8 +41,8 @@ function chat_join(s) {
     });
 }
 
-function join_room(roomid) {
-    webrtc.joinRoom(roomid);
+function join_room() {
+    webrtc.joinRoom(chatroomid);
     console.log("Joined: " + roomid);
 }
 
