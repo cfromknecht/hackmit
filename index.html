@@ -131,7 +131,8 @@ var webrtc = new SimpleWebRTC({
 });
 
 webrtc.on('readyToCall', function () {
-        webrtc.joinRoom('My room name');
+      if(chatroomid !== null)
+        webrtc.joinRoom(chatroomid);
 });
 </script>
 
