@@ -196,8 +196,8 @@ func testCode(w http.ResponseWriter, r *http.Request) {
     if err != nil {
     	fmt.Println(err)
     }
-    fmt.Println(String(out))
-    fmt.Fprint(w, "{\"status\":\"success\", \"data\": \"", String(out), "\"}" )
+    fmt.Println(string(out))
+    fmt.Fprint(w, "{\"status\":\"success\", \"data\": \"", string(out), "\"}" )
     return
 }
 
