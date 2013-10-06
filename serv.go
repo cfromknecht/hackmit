@@ -189,7 +189,7 @@ func testCode(w http.ResponseWriter, r *http.Request) {
 	app := "secure.sh"
 	out, err := exec.Command(app, qid, code).Output()
 	if err != nil {
-		log.Fatal(err)
+    	fmt.Println(err)
 	}
 	fmt.Printf("The date is %s\n", out)
 	cmd := exec.Command(app, qid, code)
