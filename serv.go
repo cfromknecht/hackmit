@@ -23,7 +23,7 @@ var store sessions.Store
 var pool *Pool
 var clients map[int64]*Client
 
-var db = mysql.New("tcp", "", "localhost:3306", "root", "pass", "suitup")
+var db = mysql.New("tcp", "", "localhost:3306", "root", "", "suitup")
 // var db, _ = sql.Open("mymysql", fmt.Sprintf("%s:%s:%s*%s/%s/%s", "tcp", "localhost", "3306", "suitup", "root", ""))
 // var tv syscall.Timeval
 
