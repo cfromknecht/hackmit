@@ -48,7 +48,17 @@ type Room struct {
 	id      []byte
 	client1 *Client
 	client2 *Client
+	question *Question
 }
+
+type Question struct {
+	Id 	int64			`json:"id"`
+	Title string		`json:"title"`
+	Body string			`json:"body"`
+	Difficulty int 		`json:"diff"`
+}
+
+
 
 func (p *Pool) Pair() {
 	for {
@@ -66,7 +76,14 @@ func (p *Pool) Pair() {
 			return
 		}
 
-		room := &Room{b, c1, c2}
+		row := db.QueryRow("SELECT * FROM questions ORDER BY RAND()")
+		q := new(Question)
+		err = row.Scan(&q.Id, &q.Title, &q.Body, &q.Difficulty)
+		if err !=  nil {
+			fmt.Println(err)
+		}
+
+		room := &Room{b, c1, c2, q}
 
 		c1.otherid, c2.otherid = c2.id, c1.id
 		c1.in, c2.in = c2.out, c1.out
@@ -149,8 +166,10 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 	chatroom := <- retChan
 
 	fmt.Println("joinChatRoom-chatroom.id: ", chatroom.id)
+	
+	qjs, err := json.Marshal(chatroom.question)
 
-	fmt.Fprint(w, "{\"status\":\"success\",\"crid\":\"", asciify(chatroom.id), "\"}")
+	fmt.Fprint(w, "{\"status\":\"success\",\"crid\":\"", asciify(chatroom.id), "\",\"question\":", qjs, "}")
 }
 
 func asciify(ba []byte) string {
@@ -168,11 +187,6 @@ func testCode(w http.ResponseWriter, r *http.Request) {
 	qid := string(1)
 	app := "./secure.sh"
 	cmd := exec.Command(app, qid, code)
-	// cmd, err := exec.Run(app, []string{app, qid, code}, nil, "", .DevNull, exec.Pipe, exec.Pipe)
-	// if (err != nil) {
- //       fmt.Fprintln(w, "{\"status\":\"failure\"}")
- //       return
- //    }
     var b bytes.Buffer
     cmd.Stdout = &b
     err := cmd.Run()
@@ -241,13 +255,6 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 	} else {
 		fmt.Fprint(w, "{\"status\":\"failure\",\"s\":\"\"}")
 	}
-}
-
-type Question struct {
-	Id 	int64			`json:"id"`
-	Title string		`json:"title"`
-	Body string			`json:"body"`
-	Difficulty int 		`json:"diff"`
 }
 
 type User struct {
