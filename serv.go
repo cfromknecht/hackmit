@@ -180,8 +180,7 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 		case message, ok := <- clients[uid].in:
 			if ok {
 				fmt.Fprint(w, "{\"status\":\"success\"}-", message)
-			}
-			else {
+			} else {
 				fmt.Fprint(w, "{\"status\":\"failure\"}")
 			}
 		default:
