@@ -76,7 +76,7 @@ function chat_send(chat, convo) {
         url: su + '/message/send',
         data: { 's': $('#' + chat).val() }        
     });
-    $('#' + convo).html($('#' + convo).html() + '<strong style="color:blue">Me:</strong> ' + $('#' + chat).val());
+    $('#' + convo).html($('#' + convo).html() + '<br /><strong style="color:blue">Me:</strong> ' + $('#' + chat).val());
     $('#' + chat).val('');    
 }
 
