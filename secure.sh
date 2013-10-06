@@ -1,10 +1,21 @@
 PROBLEM="1"
-CODE="x = raw_input()
+CODE="import os
+x = raw_input()
 print x"
-$string
+
+COUNTER=1
 for i in $(ls question/1/*.in)
 do
+	STATUS="PASS"
+	EXTRA=""
 	answer=$(echo $i | rev | cut -c 4- | rev)
 	answer=$answer".ans"
-	diff <(cat $i | python run_python_secure.py "$CODE") <(cat $answer)
+	OUTPUT=$(cat $i | python run_python_secure.py "$CODE")
+	INPUT=$(cat $i)
+	DIFF=$(diff <(echo $output) <(cat $answer))
+	if [ "$DIFF" != "" ] 
+	then
+	    STATUS="FAIL"
+	fi
+	printf "{\"status\":\"%q\", \"output\":\"%q\", \"input\":\"$INPUT\"}" $STATUS $OUTPUT
 done

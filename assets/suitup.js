@@ -2,6 +2,7 @@ var su = ''; //http://ec2-54-200-40-68.us-west-2.compute.amazonaws.com:8080';
 
 var _user_details = '/user/details';
 
+var chat_check_id;
 
 var _user_details = 'http://web.mit.edu/ambhave/www/suitup/user_details.json';
 
@@ -36,7 +37,7 @@ function chat_join(s) {
             var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror);
             
             setTimeout(join_room, 2000);
-            setTimeout(chat_check, 1000);
+            chat_check_id = setTimeout(chat_check, 1000);
             question_new();
         }
     });
@@ -48,6 +49,7 @@ function join_room() {
 }
 
 function chat_leave() {
+    clearTimeout(chat_check_id);
     $.ajax({
         type: "GET",
         url: su + '/chatroom/leave',
@@ -58,6 +60,14 @@ function chat_leave() {
     chatroomid = null;
     webrtc.leaveRoom(webrtc.roomName);
 }
+$(window).bind('beforeunload', function () {
+    $.ajax({
+        type: "GET",
+        url: su + '/chatroom/leave',
+        async: false        
+    });
+    
+});
 
 function chat_send(chat, convo) {
     $.ajax({
@@ -77,7 +87,9 @@ function chat_check() {
             sts = JSON.parse(data).status;
             if ( sts == "failure") {
                 console.log("Rejoining to new person");
-                chat_leave();
+                $('#firepad').html('');
+                $('#convo').val('');
+                $('#chat').val('');
                 chat_join();
             } else {
                 if(JSON.parse(data).s != "") {
@@ -100,7 +112,7 @@ function chat_check() {
 function question_new() {
     $.getJSON(su + '/question/new', function (data) {
         $('.questions_title').text(data['title']);
-        $('.questions_body').text(data['body']);
+        $('.questions_body').html(data['body']);
     }).error(function (jqXhr, textStatus, error) {
         alert("ERROR: " + textStatus + ", " + error);
     });
