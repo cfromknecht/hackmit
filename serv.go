@@ -193,6 +193,7 @@ func testCode(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Printf("The date is %s\n", out1)
 	cmd := exec.Command(app, qid, code)
+    fmt.Printf("asfasd");
     out, err := cmd.Output()
     if err != nil {
     	fmt.Println(err)
