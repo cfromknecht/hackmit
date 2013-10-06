@@ -12,6 +12,7 @@ import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"runtime"
+	"errors"
 )
 
 const MESSAGE_QUEUE_SIZE = 10
@@ -83,16 +84,8 @@ func UIDFromSession(w http.ResponseWriter, r *http.Request) (int64, error) {
 	var b []byte
 
 	if userid == nil {
-		b = make([]byte, 8)
-		n, err := io.ReadFull(rand.Reader, b)
-		if err != nil || n != 8 {
-			return 0, err
-		}
-		session.Values["userid"] = b
-		session.Save(r, w)
-	} else {
-		b = []byte(userid.([]uint8))
-	}
+		return 0, errors.New("no cookie set")
+	} 
 	uid, _ = binary.Varint(b)
 	return uid, nil
 }
@@ -200,25 +193,47 @@ func login(w http.ResponseWriter, r *http.Request) {
 		iq := new(IdQuery)
 		err := row.Scan(&iq.Id)
 
-		if err == nil {
-			fmt.Fprint(w, "{\"status\":\"success\",\"uid\":", iq.Id, "}")
-		} else {
+		if err != nil {
 			_, err = db.Exec("insert into users (facebook_id, username, email, level, points) values (?, ?, ?, 0, 0)", uid, "", "")
-			fmt.Println("err: ", err)
-			if err == nil {
+			if err != nil {
+				fmt.Fprint(w, "{\"status\":\"failure\"}")
+				return
+			} else {
 				row = db.QueryRow("SELECT id FROM users WHERE facebook_id=?", string(uid))
 				err = row.Scan(&iq.Id)
-				if err == nil {
-					fmt.Fprint(w, "{\"status\":\"success\"}")
-				} else {
+				if err != nil {
 					fmt.Fprint(w, "{\"status\":\"failure\"}")
+					return
 				}
-			} else {
-				fmt.Fprint(w, "{\"status\":\"failure\"}")
 			}
+
 		}
-	} else {
-		fmt.Fprint(w, "{\"status\":\"failure\"}")
+
+		session, _ := store.Get(r, "session")
+		session.Values["userid"] = iq.Id
+		session.Save(r, w)
+
+		fmt.Fprint(w, "{\"status\":\"success\"}")
+
+
+	// 	if err == nil {
+	// 		fmt.Fprint(w, "{\"status\":\"success\",\"uid\":", iq.Id, "}")
+	// 	} else {
+	// 		_, err = db.Exec("insert into users (facebook_id, username, email, level, points) values (?, ?, ?, 0, 0)", uid, "", "")
+	// 		if err == nil {
+	// 			row = db.QueryRow("SELECT id FROM users WHERE facebook_id=?", string(uid))
+	// 			err = row.Scan(&iq.Id)
+	// 			if err == nil {
+	// 				fmt.Fprint(w, "{\"status\":\"success\"},\"uid\":", iq.Id, "}")
+	// 			} else {
+	// 				fmt.Fprint(w, "{\"status\":\"failure\"}")
+	// 			}
+	// 		} else {
+	// 			fmt.Fprint(w, "{\"status\":\"failure\"}")
+	// 		}
+	// 	}
+	// } else {
+	// 	fmt.Fprint(w, "{\"status\":\"failure\"}")
 	}
 }
 	
