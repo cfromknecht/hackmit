@@ -21,7 +21,7 @@ var store sessions.Store
 var pool *Pool
 var clients map[int64]*Client
 
-var db = mysql.New("tcp", "", "127.0.0.1:3306", "root", "", "shoutsql")
+var db = mysql.New("tcp", "", "127.0.0.1:3306", "root", "", "suitup")
 // var tv syscall.Timeval
 
 type Pool struct {
