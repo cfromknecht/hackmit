@@ -152,9 +152,10 @@ func sendMessage(w http.ResponseWriter, r *http.Request) {
 	uid, err := UIDFromSession(w, r)
 	handleError(err)
 
-	message := "some string"
+	message := r.PostFormValue("s")
 
 	client := clients[uid]
+	
 	if client != nil {
 		client.out <- message
 		fmt.Fprint(w, "{\"status\":\"success\"}")
