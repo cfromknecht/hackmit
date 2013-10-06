@@ -13,6 +13,7 @@ do
 	DIFF=$(diff <(cat $i | python run_python_secure.py "$CODE") <(cat $answer))
 	if [ "$DIFF" != "" ] 
 	then
+		echo $DIFF
 	    CASE="FAIL\n"
 	    EXTRA=$(cat $i)
 	fi
