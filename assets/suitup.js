@@ -35,15 +35,14 @@ function chat_join(s) {
             });
             var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror);
             
-            setTimeout(join_room, 5000);
+            webrtc.joinRoom(String(chatroomid));
             setTimeout(chat_check, 1000);
         }
     });
 }
 
 function join_room() {
-    webrtc.joinRoom(String(chatroomid));
-    console.log("Joined: " + chatroomid);
+    
 }
 
 function chat_leave() {
