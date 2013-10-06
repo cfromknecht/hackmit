@@ -4,11 +4,11 @@ import (
 	_ "time"
 	"crypto/rand"
 	"encoding/binary"
+	"encoding/json"
 	"fmt"
 	"github.com/gorilla/sessions"
 	"io"
 	"net/http"
-	"encoding/json"
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"runtime"
@@ -147,7 +147,7 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("joinChatRoom-chatroom.id: ", chatroom.id)
 
-	fmt.Fprint(w, "{\"status\":\"success\",\"crid\":", chatroom.id, "}")
+	fmt.Fprint(w, "{\"status\":\"success\",\"crid\":\"", string(chatroom.id), "\"}")
 }
 
 func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
@@ -212,8 +212,16 @@ func newQuestion (w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		fmt.Println(err)
-
+		fmt.Fprint(w, STATUS_FAILURE)
 	}
+
+	b, err := json.Marshal(q)
+	if err != nil {
+		fmt.Println(err)
+		fmt.Fprint(w, STATUS_FAILURE)
+	}
+
+	fmt.Fprint(w, b)
 }
 
 
