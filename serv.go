@@ -188,7 +188,7 @@ func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
 	client := clients[uid]
 
 	if client != nil {
-		close(clients[client.otherid].out)
+		delete(clients, client.otherid)
 		delete(clients, uid)
 	}
 
