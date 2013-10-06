@@ -6,5 +6,5 @@ do
 	answer=$answer".ans"
 	# echo $base
 	# diff <(python run_python_secure.py '''print 2'''<< $base".in") <($base".ans")
-	diff <(python run_python_secure.py '''x = raw_input()\nprint x''' < $i) <($base".ans")
+	diff <(python run_python_secure.py '''x = raw_input()\nprint x''' < $i) <($answer)
 done
