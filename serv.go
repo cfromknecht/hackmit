@@ -186,7 +186,7 @@ func testCode(w http.ResponseWriter, r *http.Request) {
 	code := r.FormValue("submission")
 	_ = r.FormValue("cvid")
 	qid := "1"
-	app := "/home/suitup/hackmit/secure.sh"
+	app := "secure.sh"
 	// out1, err1 := exec.Command("/usr/bin/secure", qid, code).Output()
 	// if err1 != nil {
  //    	fmt.Println(err1)
