@@ -156,7 +156,14 @@ func asciify(ba []byte) string {
 
 func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
 	uid, _ := UIDFromSession(w, r)
-	delete(clients, uid)
+	client := clients[uid]
+
+	close (client.out)
+
+	client.in = nil
+	client.out = make(chan string)
+	pool.in <- client
+
 	fmt.Fprint(w, "{\"status\":\"success\"}")
 }
 
@@ -191,7 +198,8 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 			if ok {
 				fmt.Fprint(w, message)
 			} else {
-				fmt.Fprint(w, "")
+				close(client.out)
+				fmt.Fprint(w, "{\"status\":\"failure\"}")
 			}
 		default:
 			fmt.Fprint(w, "")
