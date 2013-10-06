@@ -75,6 +75,8 @@ function chat_check() {
         success: function (data) {
             sts = JSON.parse(data).status;
             if ( sts == "failure") {
+                console.log("Rejoining to new person");
+                chat_leave();
                 chat_join();
             } else {
                 if(JSON.parse(data).s != "") {
