@@ -16,7 +16,7 @@ import (
 	"html/template"
 )
 
-var templates = template.Must(template.ParseFiles("/HackMIT2/index.html"))
+var templates = template.Must(template.ParseFiles("./HackMIT2/index.html"))
 
 const MESSAGE_QUEUE_SIZE = 10
 
@@ -121,7 +121,7 @@ type IdQuery struct {
 }
 
 func mainHandle(w http.ResponseWriter, r *http.Request) {
-	templates.ExecuteTemplate(w, "HackMIT2/index.html", nil)
+	templates.ExecuteTemplate(w, "./HackMIT2/index.html", nil)
 }
 
 func joinChatRoom(w http.ResponseWriter, r *http.Request) {
