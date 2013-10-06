@@ -131,7 +131,7 @@ function question_submit() {
         data: {'submission': firepad.getText(), 'cvid': chatroomid },
         url: su + '/question/submit',
         success: function (data) {
-            console.log(JSON.parse(data));
+            console.log(data);
             if (JSON.parse(data).status == "success") {
                 dt = JSON.parse(data).data;
                 $('#convo').html($('#convo').html() + '<br /><strong style="color:red">System:</strong> ' + dt);
