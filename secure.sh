@@ -1,5 +1,6 @@
 PROBLEM="1"
-CODE="x = raw_input()
+CODE="import os
+x = raw_input()
 print x"
 
 COUNTER=1
