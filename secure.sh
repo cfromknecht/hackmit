@@ -1,7 +1,7 @@
 PROBLEM="1"
 CODE="x = raw_input()
 print x"
-$string
+
 COUNTER=1
 for i in $(ls question/1/*.in)
 do
@@ -15,6 +15,6 @@ do
 	    CASE="FAIL\n"
 	    EXTRA=$(cat $i)
 	fi
-	echo -e "Test Case $COUNTER: $CASE$EXTRA"
+	echo -e "Test Case $COUNTER: $CASE$EXTRA\n\n"
 	COUNTER=$[$COUNTER +1]
 done
