@@ -153,15 +153,15 @@ func sendMessage(w http.ResponseWriter, r *http.Request) {
 	handleError(err)
 
 	fmt.Println(r)
-	message := r.PostFormValue("s")
+	message := r.PostFormValue("message")
 
 	client := clients[uid]
 
 	if client != nil {
 		client.out <- message
-		fmt.Fprint(w, "{\"status\":\"success\"}")
+		fmt.Fprint(w, "{\"status\":\"success\"}-", message)
 	} else {
-		fmt.Fprint(w, "{\"status\":\"failure\"}")
+		fmt.Fprint(w, "{\"status\":\"failure\"}-", message)
 	}	
 }
 
