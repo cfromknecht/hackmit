@@ -1,4 +1,4 @@
-var su = 'http://ec2-54-200-40-68.us-west-2.compute.amazonaws.com:8080';
+var su = '' ; //http://ec2-54-200-40-68.us-west-2.compute.amazonaws.com:8080';
 
 var _user_details = '/user/details';
 
