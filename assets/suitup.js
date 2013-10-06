@@ -122,6 +122,7 @@ function question_new() {
 
 
 function question_submit() {
+    console.log("submit");
     $.ajax({
         type: "POST",
         data: {'submission': firepad.getText(), 'cvid': chatroomid },
