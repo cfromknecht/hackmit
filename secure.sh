@@ -1,10 +1,10 @@
 PROBLEM="1"
-CODE="x = raw_input()\nprint x"
+CODE="x = raw_input()
+print x"
 $string
 for i in $(ls question/1/*.in)
 do
 	answer=$(echo $i | rev | cut -c 4- | rev)
 	answer=$answer".ans"
-	echo python run_python_secure.py \"$CODE\" \<\<  "$i"
-	# diff <(python run_python_secure.py "x = raw_input()\nprint x" << $i) <(cat $answer)
+	diff <(cat $i | python run_python_secure.py "$CODE") <(cat $answer)
 done
