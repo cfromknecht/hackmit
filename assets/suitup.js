@@ -65,7 +65,7 @@ $(window).bind('beforeunload', function () {
         url: su + '/chatroom/leave',
         async: false        
     });
-    return true;
+    7
 });
 
 function chat_send(chat, convo) {
