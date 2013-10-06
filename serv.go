@@ -13,6 +13,7 @@ import (
 	"runtime"
 	"errors"
 	"html/template"
+	""
 )
 
 var templates = template.Must(template.ParseFiles("index.html"))
@@ -112,6 +113,7 @@ func main() {
 	http.HandleFunc("/message/send", sendMessage)
 
 	http.HandleFunc("/question/new", newQuestion)
+	http.HandleFunc("/question/submit", testCode)
 
 	http.HandleFunc("/chatroom/join", joinChatRoom)
 	http.HandleFunc("/chatroom/leave", leaveChatRoom)
@@ -153,6 +155,23 @@ func asciify(ba []byte) string {
 		ret[i] = (b % 26) + 97
 	}
 	return string(ret)
+}
+
+func testCode(w http.ResponseWriter, r *http.Request) {
+	code := r.PostFormValue("submission")
+	cvid := r.PostFormValue("cvid")
+	qid := str(1)
+	app := "./secure.sh"
+	cmd, err := exec.Run(app, []string{app, qid, code}, nil, "", exec.DevNull, exec.Pipe, exec.Pipe)
+	if (err != nil) {
+       fmt.Fprintln(w, "{\"status\":\"failure\"}")
+       return
+    }
+    var b bytes.Buffer
+    io.Copy(&b, cmd.Stdout)
+    fmt.Println(w, "{\"status\":\"success\", \"data\": ", b.String(), "}" )
+    cmd.Close()
+    return
 }
 
 func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
