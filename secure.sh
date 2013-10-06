@@ -1,7 +1,8 @@
 PROBLEM="1"
-CODE="x = raw_input()
+CODE="import os
+x = raw_input()
 print x"
-$string
+
 COUNTER=1
 for i in $(ls question/1/*.in)
 do
@@ -12,9 +13,10 @@ do
 	DIFF=$(diff <(cat $i | python run_python_secure.py "$CODE") <(cat $answer))
 	if [ "$DIFF" != "" ] 
 	then
+		echo $DIFF
 	    CASE="FAIL\n"
-	    EXTRA=$(cat $i | echo -e)
+	    EXTRA=$(cat $i)
 	fi
-	echo -e "Test Case "$COUNTER": "$CASE$EXTRA
+	echo -e "Test Case $COUNTER: $CASE$EXTRA\n\n"
 	COUNTER=$[$COUNTER +1]
 done
