@@ -82,6 +82,8 @@ func UIDFromSession(w http.ResponseWriter, r *http.Request) (int64, error) {
 
 	var uid int64
 	var b []byte
+	
+	fmt.Println("UIDFromSession: ", uid)
 
 	if userid == nil {
 		return 0, errors.New("no cookie set")
