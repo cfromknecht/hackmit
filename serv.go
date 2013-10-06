@@ -190,8 +190,6 @@ func testCode(w http.ResponseWriter, r *http.Request) {
 	app := "./secure.sh"
 	fmt.Println("Code: ", code)
 	cmd := exec.Command(app, qid, code)
-    var b bytes.Buffer
-    cmd.Stdout = &b
     out, err := cmd.Output()
     if err != nil {
     	fmt.Println(err)
