@@ -82,13 +82,13 @@ func UIDFromSession(w http.ResponseWriter, r *http.Request) (int64, error) {
 
 	fmt.Println(session.Values)
 
-	b := []byte(userid.(string))
+	// b := 
 
 	if userid == nil {
 		return 0, errors.New("no cookie set")
 	} 
-	uid, _ := binary.Varint(b)
-	return uid, nil
+	// uid, _ := binary.Varint(b)
+	return userid.(int64), nil
 }
 
 func main() {
