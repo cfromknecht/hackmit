@@ -10,12 +10,7 @@ import (
 	"net/http"
 	"encoding/json"
 	"database/sql"
-	"database/sql/driver"
 	_ "github.com/go-sql-driver/mysql"
-	// _ "github.com/ziutek/mymysql/godrv"
-	// "github.com/ziutek/mymysql/mysql"
-	// _ "github.com/ziutek/mymysql/native"
-	// _ "github.com/ziutek/mymysql/thrsafe"
 	"runtime"
 )
 
@@ -26,9 +21,7 @@ var store sessions.Store
 var pool *Pool
 var clients map[int64]*Client
 
-var db driver.Conn
-// var db = mysql.New("tcp", "", "localhost:3306", "root", "", "suitup")
-// var db, _ = sql.Open("mymysql", fmt.Sprintf("%s:%s:%s*%s/%s/%s", "tcp", "localhost", "3306", "suitup", "root", ""))
+var db *sql.DB
 // var tv syscall.Timeval
 
 type Pool struct {
@@ -107,26 +100,8 @@ func UIDFromSession(w http.ResponseWriter, r *http.Request) (int64, error) {
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	// fmt.Println(1)
-	// err := db.Connect()
-	// fmt.Println(2)
-	// handleError(err)
-	// fmt.Println(3)
-	// defer db.Close()
-	// fmt.Println(4)
-
-	fmt.Println("connecting...")
-	// db, err := sql.Open("mysql", fmt.Sprintf("%s:%s:%s*%s/%s/%s", "tcp", "localhost", "3306", "suitup", "root", ""))
-	// handleError(err)
-	db, err := sql.Open("mysql", "root:@/suitup")
-	handleError(err)
+	db, _ = sql.Open("mysql", "root:@/suitup")
 	defer db.Close()
-	fmt.Println("connected")
-
-	row := db.QueryRow("select id from users")
-	rl := new(RequestsList)
-	err = row.Scan(&rl.Id)
-	fmt.Println(rl.Id)
 
 	store = sessions.NewCookieStore(authKey)
 
@@ -145,7 +120,7 @@ func main() {
 	http.ListenAndServe(":8080", nil)
 }
 
-type RequestsList struct {
+type IdQuery struct {
     Id            int64      `json:"id"`
 
 }
@@ -218,17 +193,15 @@ func login(w http.ResponseWriter, r *http.Request) {
 	if len(inputToken) != 0 {
 		uid := GetMe(inputToken)
 
-		fmt.Println("querying")
-		// row := db.QueryRow("SELECT id FROM users WHERE facebook_id='?'", uid)
-		// row, _, err := db.QueryFirst("SELECT id FROM users WHERE facebook_id='%s';", uid)
-		// handleError(err)
-
-		fmt.Println(uid)
-
-		if w != nil {
-			// rl := new(RequestsList)
-			// err := row.Scan(&rl.Id)
-			fmt.Fprint(w, "{\"status\":\"success\",\"uid\":", "}")
+		fmt.Println("querying for: ", uid)		
+		// row := db.QueryRow("SELECT id FROM users")
+		row := db.QueryRow("SELECT id FROM users WHERE facebook_id=?", string(uid))
+		fmt.Println("returned")
+		iq := new(IdQuery)
+		err := row.Scan(&iq.Id)
+		
+		if err == nil {
+			fmt.Fprint(w, "{\"status\":\"success\",\"uid\":", iq.Id, "}")
 		} else {
 			// regStmt, err := db.Prepare("INSERT INTO users (facebook_id, username, email, level, points) VALUES(?, ?, ?, ?, ?);")
 			// handleError(err)
