@@ -22,11 +22,11 @@ const MESSAGE_QUEUE_SIZE = 10
 
 var authKey = []byte("somesecretauth")
 var store sessions.Store
+
 var pool *Pool
 var clients map[int64]*Client
 
 var db *sql.DB
-// var tv syscall.Timeval
 
 type Pool struct {
 	in  chan *Client
@@ -41,7 +41,7 @@ type Client struct {
 }
 
 type Room struct {
-	id      int64
+	// id      int64
 	client1 *Client
 	client2 *Client
 }
@@ -52,14 +52,16 @@ func (p *Pool) Pair() {
 
 		fmt.Println("match found for ", c1.id, " and ", c2.id)
 
-		b := make([]byte, 8)
-		n, err := io.ReadFull(rand.Reader, b)
-		if err != nil || n != 8 {
-			return
-		}
-		crId, _ := binary.Varint(b)
+		// b := make([]byte, 8)
+		// n, err := io.ReadFull(rand.Reader, b)
+		// if err != nil || n != 8 {
+		// 	return
+		// }
+		// crId, _ := binary.Varint(b)
 
-		room := &Room{crId, c1, c2}
+		// fmt.Print
+
+		room := &Room{c1, c2}
 
 		c1.in, c2.in = c2.out, c1.out
 
