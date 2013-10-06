@@ -1,7 +1,7 @@
 package main
 
 import (
-	"time"
+	_ "time"
 	"crypto/rand"
 	"encoding/binary"
 	"fmt"
