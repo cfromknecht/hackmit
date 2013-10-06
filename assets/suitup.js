@@ -41,8 +41,8 @@ function chat_join(s) {
             chat_check_id = setTimeout(chat_check, 1000);
             //question_new();
 
-            $('.questions_title').text(data['question']['title']);
-            $('.questions_body').html(data['question']['body']);
+            $('.questions_title').text(JSON.parse(data).question.title);
+            $('.questions_body').html(JSON.parse(data).question.body);
         }
     });
 }
