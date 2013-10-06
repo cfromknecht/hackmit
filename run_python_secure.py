@@ -13,7 +13,6 @@ if __name__ == "__main__":
 		sys.exit()
 	args = sys.argv
 	code = args[1]
-	print "Will run: ", code
 	try:
 		sandbox = Sandbox(SandboxConfig('stdin', 'stdout'))
 		sandbox.execute(code)
