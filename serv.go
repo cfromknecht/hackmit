@@ -225,6 +225,8 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 		}
 
+		fmt.Println("session-id: ", iq.Id)
+
 		session, _ := store.Get(r, "session")
 		session.Values["userid"] = iq.Id
 		session.Save(r, w)
