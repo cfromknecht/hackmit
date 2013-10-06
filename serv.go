@@ -221,7 +221,7 @@ func newQuestion (w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, STATUS_FAILURE)
 	}
 
-	fmt.Fprint(w, b)
+	fmt.Fprint(w, string(b))
 }
 
 
