@@ -188,6 +188,7 @@ func testCode(w http.ResponseWriter, r *http.Request) {
 	_ = r.FormValue("cvid")
 	qid := string(1)
 	app := "./secure.sh"
+	fmt.Println("Code: ", code)
 	cmd := exec.Command(app, qid, code)
     var b bytes.Buffer
     cmd.Stdout = &b
@@ -195,6 +196,7 @@ func testCode(w http.ResponseWriter, r *http.Request) {
     if err != nil {
     	fmt.Println(err)
     }
+    fmt.Println(b.String())
     fmt.Fprint(w, "{\"status\":\"success\", \"data\": \"", b.String(), "\"}" )
     return
 }
