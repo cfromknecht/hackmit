@@ -37,6 +37,7 @@ function chat_join(s) {
             
             setTimeout(join_room, 2000);
             setTimeout(chat_check, 1000);
+            question_new();
         }
     });
 }
@@ -75,6 +76,8 @@ function chat_check() {
         success: function (data) {
             sts = JSON.parse(data).status;
             if ( sts == "failure") {
+                console.log("Rejoining to new person");
+                chat_leave();
                 chat_join();
             } else {
                 if(JSON.parse(data).s != "") {
@@ -87,6 +90,22 @@ function chat_check() {
         }
     });
 }
+
+
+
+
+
+
+
+function question_new() {
+    $.getJSON(su + '/question/new', function (data) {
+        $('.questions_title').text(data['title']);
+        $('.questions_body').text(data['body']);
+    }).error(function (jqXhr, textStatus, error) {
+        alert("ERROR: " + textStatus + ", " + error);
+    });
+}
+
 
 
 
