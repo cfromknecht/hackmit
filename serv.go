@@ -202,7 +202,10 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 			if ok {
 				fmt.Fprint(w, message)
 			} else {
-				close(client.out)
+				if client.out != nil {
+					close(client.out)
+
+				}
 				fmt.Fprint(w, "{\"status\":\"failure\"}")
 			}
 		default:
