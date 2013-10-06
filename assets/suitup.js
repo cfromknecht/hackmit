@@ -100,7 +100,7 @@ function chat_check() {
 function question_new() {
     $.getJSON(su + '/question/new', function (data) {
         $('.questions_title').text(data['title']);
-        $('.questions_body').text(data['body']);
+        $('.questions_body').html(data['body']);
     }).error(function (jqXhr, textStatus, error) {
         alert("ERROR: " + textStatus + ", " + error);
     });
