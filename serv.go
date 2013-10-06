@@ -54,9 +54,9 @@ func (p *Pool) Pair() {
 
 		fmt.Println("match found for ", c1.id, " and ", c2.id)
 
-		b := make([]byte, 1)
+		b := make([]byte, 32)
 		n, err := io.ReadFull(rand.Reader, b)
-		if err != nil || n != 1 {
+		if err != nil || n != 32 {
 			return
 		}
 		// crId, _ := binary.Varint(b)
@@ -147,7 +147,15 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("joinChatRoom-chatroom.id: ", chatroom.id)
 
-	fmt.Fprint(w, "{\"status\":\"success\",\"crid\":\"", string(chatroom.id), "\"}")
+	fmt.Fprint(w, "{\"status\":\"success\",\"crid\":\"", asciify(chatroom.id), "\"}")
+}
+
+func asciify(ba []byte) string {
+	ret := make([]byte, len(ba))
+	for i, b := range ba {
+		ret[i] = (b % 26) + 97
+	}
+	return string(ret)
 }
 
 func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
@@ -199,16 +207,16 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 }
 
 type Question struct {
-	id 	int64
-	title string
-	body string
-	difficulty int
+	Id 	int64
+	Title string
+	Body string
+	Difficulty int
 }
 
-func newQuestion (w http.ResponseWriter, r *http.Request) {
+func newQuestion(w http.ResponseWriter, r *http.Request) {
 	row := db.QueryRow("SELECT * FROM questions ORDER BY RAND()")
 	q := new(Question)
-	err := row.Scan(&q.id, &q.title, &q.body, &q.difficulty)
+	err := row.Scan(&q.Id, &q.Title, &q.Body, &q.Difficulty)
 
 	if err != nil {
 		fmt.Println(err)
