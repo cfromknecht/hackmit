@@ -42,7 +42,7 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"> </script> 
      <script src="assets/suitup.js">  </script>
 
-<script src="https://cdn.firebase.com/v0/firebase.js"></script>
+<script src="//cdn.firebase.com/v0/firebase.js"></script>
 
         <!-- Download from http://codemirror.net/codemirror.zip -->
         <link rel="stylesheet" href="assets/codemirror.css" />
@@ -167,7 +167,7 @@ webrtc.on('readyToCall', function () {
 
         <div style="" id="firepad"></div>
         <script>
-            var firepadRef = new Firebase('https://hackmitsuitup.firebaseIO.com/firepads/test');
+            var firepadRef = new Firebase('//hackmitsuitup.firebaseIO.com/firepads/test');
             var codeMirror = CodeMirror(document.getElementById('firepad'), { 
               lineNumbers: true, 
               mode: 'python'
