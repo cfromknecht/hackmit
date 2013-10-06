@@ -13,6 +13,8 @@ import (
 	"runtime"
 	"errors"
 	"html/template"
+	"os/exec"
+	"bytes"
 )
 
 var templates = template.Must(template.ParseFiles("index.html"))
@@ -36,6 +38,7 @@ type Pool struct {
 
 type Client struct {
 	id      int64
+	otherid int64
 	in      chan string
 	out     chan string
 	retChan chan *Room
@@ -64,7 +67,8 @@ func (p *Pool) Pair() {
 		}
 
 		room := &Room{b, c1, c2}
-		
+
+		c1.otherid, c2.otherid = c2.id, c1.id
 		c1.in, c2.in = c2.out, c1.out
 
 		c1.retChan <- room
@@ -112,6 +116,7 @@ func main() {
 	http.HandleFunc("/message/send", sendMessage)
 
 	http.HandleFunc("/question/new", newQuestion)
+	http.HandleFunc("/question/submit", testCode)
 
 	http.HandleFunc("/chatroom/join", joinChatRoom)
 	http.HandleFunc("/chatroom/leave", leaveChatRoom)
@@ -135,6 +140,7 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 		id:      uid,
 		in:      nil,
 		out:     make(chan string, MESSAGE_QUEUE_SIZE),
+		retChan: retChan,
 	}
 
 	clients[uid] = client
@@ -155,11 +161,35 @@ func asciify(ba []byte) string {
 	return string(ret)
 }
 
+func testCode(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	code := r.FormValue("submission")
+	_ = r.FormValue("cvid")
+	qid := string(1)
+	app := "./secure.sh"
+	cmd := exec.Command(app, qid, code)
+	// cmd, err := exec.Run(app, []string{app, qid, code}, nil, "", .DevNull, exec.Pipe, exec.Pipe)
+	// if (err != nil) {
+ //       fmt.Fprintln(w, "{\"status\":\"failure\"}")
+ //       return
+ //    }
+    var b bytes.Buffer
+    cmd.Stdout = &b
+    err := cmd.Run()
+    if err != nil {
+    	fmt.Println(err)
+    }
+    fmt.Fprint(w, "{\"status\":\"success\", \"data\": ", b.String(), "}" )
+    return
+}
+
 func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
 	uid, _ := UIDFromSession(w, r)
 	client := clients[uid]
 
 	if client != nil {
+		fmt.Println("leaving")
+		delete(clients, client.otherid)
 		delete(clients, uid)
 	}
 
@@ -174,13 +204,12 @@ func sendMessage(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("send ", uid)
 
+	r.ParseForm()
 	message := r.FormValue("s")
-
-	// message := r.PostFormValue("message")
 
 	client := clients[uid]
 
-	if client != nil && client.out != nil {
+	if client != nil {
 		client.out <- message
 		fmt.Fprint(w, "{\"status\":\"success\"}")
 	} else {
