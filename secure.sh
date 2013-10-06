@@ -10,12 +10,12 @@ do
 	EXTRA=""
 	answer=$(echo $i | rev | cut -c 4- | rev)
 	answer=$answer".ans"
-	DIFF=$(diff <(cat $i | python run_python_secure.py "$CODE") <(cat $answer))
+	output=$(cat $i | python run_python_secure.py "$CODE")
+	DIFF=$(diff <(echo $output) <(cat $answer))
 	if [ "$DIFF" != "" ] 
 	then
-		echo $DIFF
 	    CASE="FAIL\n"
-	    EXTRA=$DIFF
+	    EXTRA="returned\n$output\ninput\n$i"
 	    # EXTRA+=$(cat $i)
 	fi
 	echo -e "Test Case $COUNTER: $CASE$EXTRA\n\n"
