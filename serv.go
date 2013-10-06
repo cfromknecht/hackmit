@@ -196,7 +196,7 @@ func testCode(w http.ResponseWriter, r *http.Request) {
     fmt.Printf("asfasd");
     out, err := cmd.Output()
     if err != nil {
-    	fmt.Println(err)
+    	fmt.Println("LOL", err)
     }
     fmt.Println(string(out))
     fmt.Fprint(w, "{\"status\":\"success\", \"data\": \"", string(out), "\"}" )
