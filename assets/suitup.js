@@ -34,11 +34,16 @@ function chat_join(s) {
                 mode: 'python'
             });
             var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror);
-            webrtc.on('readyToCall', function () {
-                webrtc.joinRoom(chatroomid);
-            });
+            
+            setTimeout(join_room, 5000);
             setTimeout(chat_check, 1000);
         }
+    });
+}
+
+function join_room(roomid) {
+    webrtc.on('readyToCall', function () {
+        webrtc.joinRoom(roomid);
     });
 }
 
