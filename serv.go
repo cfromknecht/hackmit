@@ -41,7 +41,7 @@ type Client struct {
 }
 
 type Room struct {
-	// id      int64
+	id      int64
 	client1 *Client
 	client2 *Client
 }
@@ -52,14 +52,14 @@ func (p *Pool) Pair() {
 
 		fmt.Println("match found for ", c1.id, " and ", c2.id)
 
-		// b := make([]byte, 8)
-		// n, err := io.ReadFull(rand.Reader, b)
-		// if err != nil || n != 8 {
-		// 	return
-		// }
-		// crId, _ := binary.Varint(b)
+		b := make([]byte, 8)
+		n, err := io.ReadFull(rand.Reader, b)
+		if err != nil || n != 8 {
+			return
+		}
+		crId, _ := binary.Varint(b)
 
-		// fmt.Print
+		fmt.Print
 
 		room := &Room{c1, c2}
 
