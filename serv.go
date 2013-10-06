@@ -61,6 +61,8 @@ func (p *Pool) Pair() {
 
 		room := &Room{crId, c1, c2}
 
+		fmt.Println("ChatroomID: ", crId)
+
 		c1.in, c2.in = c2.out, c1.out
 
 		c1.retChan <- room
