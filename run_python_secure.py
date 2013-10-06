@@ -10,6 +10,7 @@ if __name__ == "__main__":
 	'''
 	if len(sys.argv) != 2:
 		print "Not enough args"
+		print sys.argv
 		sys.exit()
 	args = sys.argv
 	code = args[1]
