@@ -52,9 +52,9 @@ func (p *Pool) Pair() {
 
 		fmt.Println("match found for ", c1.id, " and ", c2.id)
 
-		b := make([]byte, 8)
+		b := make([]byte, 32)
 		n, err := io.ReadFull(rand.Reader, b)
-		if err != nil || n != 8 {
+		if err != nil || n != 32 {
 			return
 		}
 		crId, _ := binary.Varint(b)
@@ -85,7 +85,6 @@ func UIDFromSession(w http.ResponseWriter, r *http.Request) (int64, error) {
 	session, _ := store.Get(r, "session")
 	userid := session.Values["userid"]
 
-	fmt.Println(session.Values)
 	if userid == nil {
 		return 0, errors.New("no cookie set")
 	} 
@@ -130,7 +129,6 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 	uid, err := UIDFromSession(w, r)
 	handleError(err)
 
-  	fmt.Println("uid: ", uid)
 	retChan := make(chan *Room)
 	client := &Client{
 		id:      uid,
@@ -141,8 +139,9 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 	clients[uid] = client
 	pool.in <- client
 
-	fmt.Println("added ", uid, " to queue")
 	chatroom := <- retChan
+
+	fmt.Println("joinChatRoom-chatroom.id: ", chatroom.id)
 
 	fmt.Fprint(w, "{\"status\":\"success\",\"crid\":", chatroom.id, "}")
 }
@@ -155,8 +154,6 @@ func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
 func sendMessage(w http.ResponseWriter, r *http.Request) {
 	uid, err := UIDFromSession(w, r)
 	handleError(err)
-
-	fmt.Println(uid)
 
 	message := r.FormValue("s")
 
@@ -179,22 +176,19 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 	client := clients[uid]
 
 	if client != nil {
-		fmt.Println("client found")
 		select {
 		case message, ok := <- clients[uid].in:
-			fmt.Println("message pulled from channel")
+			// fmt.Println("message pulled from channel")
 			if ok {
 				fmt.Fprint(w, message)
 			} else {
 				fmt.Fprint(w, "")
 			}
 		default:
-			fmt.Println("")
 			fmt.Fprint(w, "")
 		}
 	
 	} else {
-		fmt.Println("client not found")
 		fmt.Fprint(w, "")
 	}
 }
@@ -227,13 +221,9 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		fmt.Println("session-id: ", iq.Id)
-
 		session, _ := store.Get(r, "session")
 		session.Values["userid"] = iq.Id
 		session.Save(r, w)
-
-		fmt.Println(session.Values)
 
 		fmt.Fprint(w, "{\"status\":\"success\"}")
 
