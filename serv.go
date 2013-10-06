@@ -52,9 +52,9 @@ func (p *Pool) Pair() {
 
 		fmt.Println("match found for ", c1.id, " and ", c2.id)
 
-		b := make([]byte, 8)
+		b := make([]byte, 32)
 		n, err := io.ReadFull(rand.Reader, b)
-		if err != nil || n != 8 {
+		if err != nil || n != 32 {
 			return
 		}
 		crId, _ := binary.Varint(b)
@@ -140,6 +140,8 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 	pool.in <- client
 
 	chatroom := <- retChan
+
+	fmt.Println("joinChatRoom-chatroom.id: ", chatroom.id)
 
 	fmt.Fprint(w, "{\"status\":\"success\",\"crid\":", chatroom.id, "}")
 }
