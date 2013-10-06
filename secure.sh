@@ -13,9 +13,8 @@ do
 	if [ "$DIFF" != "" ] 
 	then
 	    CASE="FAIL\n"
-	    EXTRA=$(cat $answer)
+	    EXTRA=$(cat $i)
 	fi
 	echo -e "Test Case "$COUNTER": "$CASE$EXTRA
-
-	COUNTER=1
+	COUNTER=$[$COUNTER +1]
 done
