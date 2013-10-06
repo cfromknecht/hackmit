@@ -164,12 +164,12 @@ func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
 		case _, ok := <- client.in:
 			if ok {
 				close(client.out)
+				delete(clients, uid)
 			}
 		default:
 			fmt.Println("already closed")
 		}
 	}
-	
 
 	fmt.Println("leave ", uid)
 
@@ -210,6 +210,7 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 			if ok {
 				fmt.Fprint(w, "{\"status\":\"success\",\"s\":\"", message, "\"}")
 			} else {
+				delete(clients, uid)
 				fmt.Fprint(w, "{\"status\":\"failure\"}")
 			}
 		default:
