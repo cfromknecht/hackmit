@@ -17,5 +17,5 @@ do
 	then
 	    STATUS="FAIL"
 	fi
-	echo '{"status":'"'"$STATUS"'"', "output":'"'"$OUTPUT"'"', "input":'"'"$INPUT"'"'}'
+	echo "{\"status\":\"$STATUS\", \"output\":\"$OUTPUT\", \"input\":\"$INPUT\"}"
 done
