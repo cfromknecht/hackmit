@@ -80,6 +80,9 @@ func UIDFromSession(w http.ResponseWriter, r *http.Request) (int64, error) {
 	session, _ := store.Get(r, "session")
 	userid := session.Values["userid"]
 
+	fmt.Println(session.Values)
+
+
 	var uid int64
 	var b []byte
 	
@@ -232,7 +235,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 		session.Save(r, w)
 
 		fmt.Println(session.Values)
-		
+
 		fmt.Fprint(w, "{\"status\":\"success\"}")
 
 
