@@ -59,7 +59,14 @@ function chat_leave() {
     chatroomid = null;
     webrtc.leaveRoom(webrtc.roomName);
 }
-$(window).bind('beforeunload', chat_leave);
+$(window).bind('beforeunload', function () {
+    $.ajax({
+        type: "GET",
+        url: su + '/chatroom/leave',
+        async: false        
+    });
+    return true;
+});
 
 function chat_send(chat, convo) {
     $.ajax({
