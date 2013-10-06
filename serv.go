@@ -81,13 +81,9 @@ func UIDFromSession(w http.ResponseWriter, r *http.Request) (int64, error) {
 	userid := session.Values["userid"]
 
 	fmt.Println(session.Values)
-
-	// b := 
-
 	if userid == nil {
 		return 0, errors.New("no cookie set")
 	} 
-	// uid, _ := binary.Varint(b)
 	return userid.(int64), nil
 }
 
@@ -181,18 +177,18 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 		case message, ok := <- clients[uid].in:
 			fmt.Println("message pulled from channel")
 			if ok {
-				fmt.Fprint(w, "{\"status\":\"success\"}-", message)
+				fmt.Fprint(w, message)
 			} else {
-				fmt.Fprint(w, "{\"status\":\"failure\"}")
+				fmt.Fprint(w, "")
 			}
 		default:
-			fmt.Println("default")
+			fmt.Println("")
 			fmt.Fprint(w, "")
 		}
 	
 	} else {
 		fmt.Println("client not found")
-		fmt.Fprint(w, "{\"status\":\"failure\"}")
+		fmt.Fprint(w, "")
 	}
 }
 
