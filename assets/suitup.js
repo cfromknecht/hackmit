@@ -2,6 +2,7 @@ var su = ''; //http://ec2-54-200-40-68.us-west-2.compute.amazonaws.com:8080';
 
 var _user_details = '/user/details';
 
+var chat_check_id;
 
 var _user_details = 'http://web.mit.edu/ambhave/www/suitup/user_details.json';
 
@@ -77,7 +78,9 @@ function chat_check() {
             sts = JSON.parse(data).status;
             if ( sts == "failure") {
                 console.log("Rejoining to new person");
-                chat_leave();
+                $('#firepad').html('');
+                $('#convo').val('');
+                $('#chat').val('');
                 chat_join();
             } else {
                 if(JSON.parse(data).s != "") {
