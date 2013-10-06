@@ -192,7 +192,7 @@ func testCode(w http.ResponseWriter, r *http.Request) {
  //    	fmt.Println(err1)
 	// }
 	// fmt.Printf("The date is %s\n", out1)
-	out, err := exec.Command("bash", "-c", "secure.sh " + qid + " '" + code + "'").Output()
+	out, err := exec.Command("bash", "-c", app + " " + qid + " '" + code + "'").Output()
     if err != nil {
     	fmt.Println("LOL", err)
     	return
