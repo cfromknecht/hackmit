@@ -47,7 +47,7 @@ func (p *Pool) Pair() {
 	for {
 		c1, c2 := <-p.in, <-p.in
 
-		fmt.Println("match found")
+		fmt.Println("match found for ", c1.id, " and ", c2.id)
 
 		b := make([]byte, 8)
 		n, err := io.ReadFull(rand.Reader, b)
@@ -152,7 +152,7 @@ func sendMessage(w http.ResponseWriter, r *http.Request) {
 	uid, err := UIDFromSession(w, r)
 	handleError(err)
 
-	fmt.Println(r)
+	fmt.Println(uid)
 
 	message := r.FormValue("s")
 
@@ -223,9 +223,6 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		fmt.Println("found")
-
-
 		session, _ := store.Get(r, "session")
 		session.Values["userid"] = iq.Id
 		session.Save(r, w)
@@ -256,9 +253,6 @@ func login(w http.ResponseWriter, r *http.Request) {
 	
 
 func readHttpBody(response *http.Response) string {
-
-	fmt.Println("Reading body")
-
 	bodyBuffer := make([]byte, 1000)
 	var str string
 
@@ -278,7 +272,6 @@ func readHttpBody(response *http.Response) string {
 }
 
 func getUncachedResponse(uri string) (*http.Response, error) {
-	fmt.Println("Uncached response GET")
 	request, err := http.NewRequest("GET", uri, nil)
 
 	if err == nil {
@@ -296,7 +289,6 @@ func getUncachedResponse(uri string) (*http.Response, error) {
 }
 
 func GetMe(token string) string {
-	fmt.Println("Getting me")
 	response, err := getUncachedResponse("https://graph.facebook.com/me?access_token="+token)
 
 	if err == nil {
@@ -304,8 +296,6 @@ func GetMe(token string) string {
 		var jsonBlob interface{}
 
 		responseBody := readHttpBody(response)
-
-		fmt.Println("responseboyd", responseBody)
 
 		if responseBody != "" {
 			err = json.Unmarshal([]byte(responseBody), &jsonBlob)
