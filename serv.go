@@ -184,9 +184,10 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 			else {
 				fmt.Fprint(w, "{\"status\":\"failure\"}")
 			}
-		}
 		default:
 			fmt.Fprint(w, "")
+		}
+	
 	} else {
 		fmt.Fprint(w, "{\"status\":\"failure\"}")
 	}
