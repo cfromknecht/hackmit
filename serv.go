@@ -51,6 +51,10 @@ func (p *Pool) Pair() {
 	for {
 		c1, c2 := <-p.in, <-p.in
 
+		for c1.id == c2.id {
+			c2 = <- p.in
+		}
+
 		fmt.Println("match found for ", c1.id, " and ", c2.id)
 
 		b := make([]byte, 32)
@@ -156,7 +160,14 @@ func asciify(ba []byte) string {
 
 func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
 	uid, _ := UIDFromSession(w, r)
-	delete(clients, uid)
+	client := clients[uid]
+
+	close (client.out)
+
+	client.in = nil
+	client.out = make(chan string)
+	pool.in <- client
+
 	fmt.Fprint(w, "{\"status\":\"success\"}")
 }
 
@@ -191,7 +202,8 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 			if ok {
 				fmt.Fprint(w, message)
 			} else {
-				fmt.Fprint(w, "")
+				close(client.out)
+				fmt.Fprint(w, "{\"status\":\"failure\"}")
 			}
 		default:
 			fmt.Fprint(w, "")
