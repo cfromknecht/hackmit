@@ -17,5 +17,5 @@ do
 	then
 	    STATUS="FAIL"
 	fi
-	echo "{\"status\":\"$STATUS\", \"output\":\"$OUTPUT\", \"input\":\"$INPUT\"}"
+	printf "{\"status\":\"%q\", \"output\":\"$OUTPUT\", \"input\":\"$INPUT\"}" $STATUS
 done
