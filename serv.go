@@ -13,8 +13,7 @@ import (
 	"runtime"
 	"errors"
 	"html/template"
-	"exec"
-	"os"
+	"os/exec"
 	"bytes"
 )
 
