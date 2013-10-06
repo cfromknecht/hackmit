@@ -14,7 +14,6 @@ import (
 	"errors"
 	"html/template"
 	"os/exec"
-	"bytes"
 )
 
 var templates = template.Must(template.ParseFiles("index.html"))
