@@ -159,7 +159,17 @@ func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
 	uid, _ := UIDFromSession(w, r)
 	client := clients[uid]
 
-	close(client.out)
+	if client != nil {
+		select {
+		case _, ok := <- client.in:
+			if ok {
+				close(client.out)
+			}
+		default:
+			fmt.Println("already closed")
+		}
+	}
+	
 
 	fmt.Println("leave ", uid)
 
@@ -200,7 +210,6 @@ func checkMessage(w http.ResponseWriter, r *http.Request) {
 			if ok {
 				fmt.Fprint(w, "{\"status\":\"success\",\"s\":\"", message, "\"}")
 			} else {
-				close(client.out)
 				fmt.Fprint(w, "{\"status\":\"failure\"}")
 			}
 		default:
