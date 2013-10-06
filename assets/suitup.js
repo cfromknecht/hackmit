@@ -76,7 +76,7 @@ function chat_send(chat, convo) {
         url: su + '/message/send',
         data: { 's': $('#' + chat).val() }        
     });
-    $('#' + convo).html($('#' + convo).html() + '<strong style="color:green">Me:</strong> ' + $('#' + chat).val());
+    $('#' + convo).html($('#' + convo).html() + '<strong style="color:blue">Me:</strong> ' + $('#' + chat).val());
     $('#' + chat).val('');    
 }
 
@@ -95,7 +95,7 @@ function chat_check() {
             } else {
                 if(JSON.parse(data).s != "") {
                     //$('#convo').val($('#convo').val() + '\nOther: ' + JSON.parse(data).s);
-                    $('#convo').html($('#convo').html() + '<strong style="color:green">Other:</strong> ' + JSON.parse(data).s);
+                    $('#convo').html($('#convo').html() + '<br /><strong style="color:red">Other:</strong> ' + JSON.parse(data).s);
                     setTimeout(chat_check, 1000);
                 } else {
                     setTimeout(chat_check, 2000);
