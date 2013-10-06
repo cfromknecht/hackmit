@@ -38,8 +38,6 @@ type Client struct {
 	id      int64
 	in      chan string
 	out     chan string
-	endin 	chan bool
-	endout  chan bool
 	retChan chan *Room
 }
 
@@ -133,22 +131,11 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("join ", uid)
 
 	retChan := make(chan *Room)
-	endOut := make(chan bool)
 	client := &Client{
 		id:      uid,
 		in:      nil,
 		out:     make(chan string, MESSAGE_QUEUE_SIZE),
-		endin:	 nil,
-		endout:	 endOut,
-		retChan: retChan,
 	}
-	go func(c *Client) {
-		fmt.Println("waiting")
-		<- c.endin
-		c.endout <- true
-		fmt.Println("deleting: ", c.id)
-		delete(clients, c.id)
-	}(client)
 
 	clients[uid] = client
 	pool.in <- client
@@ -173,7 +160,7 @@ func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
 	client := clients[uid]
 
 	if client != nil {
-		client.endout <- true
+		delete(clients, uid)
 	}
 
 	fmt.Println("leave ", uid)
