@@ -2,7 +2,7 @@ var su = ''; //http://ec2-54-200-40-68.us-west-2.compute.amazonaws.com:8080';
 
 var _user_details = '/user/details';
 
-var chat_check_id;
+var chat_check_id, firepad, chatroomid;
 
 var _user_details = 'http://web.mit.edu/ambhave/www/suitup/user_details.json';
 
@@ -34,8 +34,9 @@ function chat_join(s) {
                 lineNumbers: true,
                 mode: 'python'
             });
-            var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror);
-            
+            firepad = Firepad.fromCodeMirror(firepadRef, codeMirror);
+            webrtc.on('readyToCall', function () {
+            });
             setTimeout(join_room, 2000);
             chat_check_id = setTimeout(chat_check, 1000);
             question_new();
@@ -110,7 +111,7 @@ function chat_check() {
 
 
 function question_new() {
-    $.getJSON(su + '/question/new', function (data) {
+    $.getJSON(su + '/question/new', {'cvid': chatroomid }, function (data) {
         $('.questions_title').text(data['title']);
         $('.questions_body').html(data['body']);
     }).error(function (jqXhr, textStatus, error) {
@@ -118,6 +119,17 @@ function question_new() {
     });
 }
 
+
+function question_submit() {
+    $.ajax({
+        type: "POST",
+        data: {'submission': firepad.getText(), 'cvid': chatroomid },
+        url: su + '/question/submit',
+        success: function (data) {
+            
+        }
+    });
+}
 
 
 
