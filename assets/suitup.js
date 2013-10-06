@@ -73,7 +73,6 @@ function chat_check() {
         type: "GET",
         url: su + '/message/check',
         success: function (data) {
-            
             if (data != '') {
                 console.log(data);
                 $('#convo').val($('#convo').val() + '\nOther: ' + data);
