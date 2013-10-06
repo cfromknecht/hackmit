@@ -199,14 +199,23 @@ func login(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("returned")
 		iq := new(IdQuery)
 		err := row.Scan(&iq.Id)
-		
+
 		if err == nil {
 			fmt.Fprint(w, "{\"status\":\"success\",\"uid\":", iq.Id, "}")
 		} else {
-			// regStmt, err := db.Prepare("INSERT INTO users (facebook_id, username, email, level, points) VALUES(?, ?, ?, ?, ?);")
-			// handleError(err)
-			// regStmt.Run(uid, "", "", 0, 0)
-			fmt.Fprint(w, "{\"status\":\"success\"}")
+			_, err = db.Exec("insert into users (facebook_id, username, email, level, points) values (?, ?, ?, 0, 0)", uid, "", "")
+			fmt.Println("err: ", err)
+			if err == nil {
+				row = db.QueryRow("SELECT id FROM users WHERE facebook_id=?", string(uid))
+				err = row.Scan(&iq.Id)
+				if err == nil {
+					fmt.Fprint(w, "{\"status\":\"success\"}")
+				} else {
+					fmt.Fprint(w, "{\"status\":\"failure\"}")
+				}
+			} else {
+				fmt.Fprint(w, "{\"status\":\"failure\"}")
+			}
 		}
 	} else {
 		fmt.Fprint(w, "{\"status\":\"failure\"}")
