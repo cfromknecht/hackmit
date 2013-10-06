@@ -54,9 +54,9 @@ func (p *Pool) Pair() {
 
 		fmt.Println("match found for ", c1.id, " and ", c2.id)
 
-		b := make([]byte, 1)
+		b := make([]byte, 32)
 		n, err := io.ReadFull(rand.Reader, b)
-		if err != nil || n != 1 {
+		if err != nil || n != 32 {
 			return
 		}
 		// crId, _ := binary.Varint(b)
@@ -147,7 +147,14 @@ func joinChatRoom(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("joinChatRoom-chatroom.id: ", chatroom.id)
 
-	fmt.Fprint(w, "{\"status\":\"success\",\"crid\":\"", string(chatroom.id), "\"}")
+	fmt.Fprint(w, "{\"status\":\"success\",\"crid\":\"", asciify(chatroom.id), "\"}")
+}
+
+func asciify(ba []byte) string {
+	for i, b := range ba {
+		ba[i] = (b % 26) + 97
+	}
+	return string(ba)
 }
 
 func leaveChatRoom(w http.ResponseWriter, r *http.Request) {
