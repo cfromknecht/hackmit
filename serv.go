@@ -153,7 +153,9 @@ func sendMessage(w http.ResponseWriter, r *http.Request) {
 	handleError(err)
 
 	fmt.Println(r)
-	message := r.PostFormValue("message")
+	// message := r.PostFormValue("message")
+
+	message := "some string"
 
 	client := clients[uid]
 
