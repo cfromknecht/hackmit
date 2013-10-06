@@ -122,6 +122,8 @@ func main() {
 	pool = newPool()
 	clients = make(map[int64]*Client)
 
+	http.HandleFunc("/", mainHandle)
+
 	http.HandleFunc("/login", login)
 
 	http.HandleFunc("/message/check", checkMessage)
@@ -129,7 +131,11 @@ func main() {
 
 	http.HandleFunc("/chatroom/join", joinChatRoom)
 	http.HandleFunc("/chatroom/leave", leaveChatRoom)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":6969", nil)
+}
+
+func mainHandle(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, "hey")
 }
 
 func joinChatRoom(w http.ResponseWriter, r *http.Request) {
