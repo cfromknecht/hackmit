@@ -22,11 +22,11 @@ const MESSAGE_QUEUE_SIZE = 10
 
 var authKey = []byte("somesecretauth")
 var store sessions.Store
+
 var pool *Pool
 var clients map[int64]*Client
 
 var db *sql.DB
-// var tv syscall.Timeval
 
 type Pool struct {
 	in  chan *Client
@@ -60,6 +60,8 @@ func (p *Pool) Pair() {
 		crId, _ := binary.Varint(b)
 
 		room := &Room{crId, c1, c2}
+
+		fmt.Println("ChatroomID: ", crId)
 
 		c1.in, c2.in = c2.out, c1.out
 
